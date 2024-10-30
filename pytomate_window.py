@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QGraphicsView, QVBoxLayout, QGraphicsScene
 from pytomate_graphics_scene import OurQGraphicsScene
 from pytomate_graphics_view import OurQGraphicsView
+from pytomate_scene import Scene
 
 class PytomateWindow(QWidget):
     def __init__(self, parent=None):
@@ -14,7 +15,9 @@ class PytomateWindow(QWidget):
         self.setWindowTitle("Pytomate")
 
         #Creating a graphics scene
-        self.graphicsScene = OurQGraphicsScene()
+        self.Scene = Scene()
+        self.graphicsScene = self.Scene.graphicsScene
+
 
 
         # Creating a graphics view where charts will be shown
