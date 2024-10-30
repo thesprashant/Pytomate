@@ -5,6 +5,7 @@ from pytomate_graphics_scene import OurQGraphicsScene
 from pytomate_graphics_view import OurQGraphicsView
 from pytomate_scene import Scene
 from pytomate_node import Node
+from pytomate_socket import Socket
 
 class PytomateWindow(QWidget):
     def __init__(self, parent=None):
@@ -23,7 +24,7 @@ class PytomateWindow(QWidget):
         self.setLayout(self.layout)
         self.Scene = Scene()
 
-        node = Node(self.Scene, "Note")
+        node = Node(self.Scene, "Note", inputs=[1,2,3], outputs=[1])
 
         self.view = OurQGraphicsView(self.Scene.graphicsScene, self)
         self.layout.addWidget(self.view)
