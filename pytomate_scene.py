@@ -1,7 +1,7 @@
 from pytomate_graphics_scene import OurQGraphicsScene
 
 
-class Scene:
+class Scene():
     def __init__ (self):
         self.nodes = []
         self.edges = []
