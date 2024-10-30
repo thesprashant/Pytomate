@@ -1,3 +1,4 @@
+from node_content_widget import OurNodeContentWidget
 from pytomate_graphics_node import OurGraphicsNode
 
 
@@ -6,11 +7,11 @@ class Node():
         self.scene = scene
 
         self.title = title
-
-        self.graphicsNode = OurGraphicsNode(self, self.title)
+        self.content = OurNodeContentWidget()
+        self.grNode = OurGraphicsNode(self)
 
         self.scene.addNode(self)
-        self.scene.graphicsScene.addItem(self.graphicsNode)
+        self.scene.graphicsScene.addItem(self.grNode)
 
 
         self.inputs = []

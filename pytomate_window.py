@@ -1,4 +1,6 @@
-from PyQt5.QtWidgets import QWidget, QGraphicsView, QVBoxLayout, QGraphicsScene
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 from pytomate_graphics_scene import OurQGraphicsScene
 from pytomate_graphics_view import OurQGraphicsView
 from pytomate_scene import Scene
@@ -7,6 +9,10 @@ from pytomate_node import Node
 class PytomateWindow(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.stylesheet_filename = 'qss/nodestyle.qss'
+        self.loadStylesheet(self.stylesheet_filename)
+
+
         self.initialise_ui()
 
 
@@ -25,3 +31,10 @@ class PytomateWindow(QWidget):
         self.setWindowTitle("Pytomate")
 
         self.show()
+
+    def loadStylesheet(self, filename):
+        print('STYLE loading:', filename)
+        file = QFile(filename)
+        file.open(QFile.ReadOnly | QFile.Text)
+        stylesheet = file.readAll()
+        QApplication.instance().setStyleSheet(str(stylesheet, encoding='utf-8'))

@@ -1,0 +1,2 @@
+OurNodeContentWidget { background: transparent; }
+OurNodeContentWidget QLineEdit { color: #000000;  }
