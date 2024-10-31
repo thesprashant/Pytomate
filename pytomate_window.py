@@ -5,6 +5,8 @@ from pytomate_graphics_scene import OurQGraphicsScene
 from pytomate_graphics_view import OurQGraphicsView
 from pytomate_scene import Scene
 from pytomate_node import Node
+from pytomate_edge import Edge, EDGE_TYPE_BEZIER
+
 from pytomate_socket import Socket
 
 class PytomateWindow(QWidget):
@@ -24,7 +26,7 @@ class PytomateWindow(QWidget):
         self.setLayout(self.layout)
         self.Scene = Scene()
 
-        node = Node(self.Scene, "Note", inputs=[1,2,3], outputs=[1])
+        self.addNodes()
 
         self.view = OurQGraphicsView(self.Scene.graphicsScene, self)
         self.layout.addWidget(self.view)
@@ -32,6 +34,19 @@ class PytomateWindow(QWidget):
         self.setWindowTitle("Pytomate")
 
         self.show()
+
+    def addNodes(self):
+        node1 = Node(self.Scene, "Note ", inputs=[1,2,3], outputs=[1])
+        node2 = Node(self.Scene, "Note", inputs=[1,2,3], outputs=[1])
+        node3 = Node(self.Scene, "Note", inputs=[1,2,3], outputs=[1])
+        node1.setPos(-350, -250)
+        node2.setPos(-75, 0)
+        node3.setPos(200, -150)
+
+        edge1 = Edge(self.Scene, node1.outputs[0], node2.inputs[0], edge_type=EDGE_TYPE_BEZIER)
+        edge2 = Edge(self.Scene, node2.outputs[0], node3.inputs[0], edge_type=EDGE_TYPE_BEZIER)
+
+
 
     def loadStylesheet(self, filename):
         print('STYLE loading:', filename)

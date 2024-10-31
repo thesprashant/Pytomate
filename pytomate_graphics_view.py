@@ -14,7 +14,7 @@ class OurQGraphicsView(QGraphicsView):
 
         self.zoomInFactor = 1.25
         self.zoomOutFactor = 1 / self.zoomInFactor
-        self.zoom = 10
+        self.zoom = 5
         self.zoomClamp = True
         self.zoomStep = 1
         self.zoomRange = [0, 10]
