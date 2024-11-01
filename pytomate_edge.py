@@ -29,6 +29,11 @@ class Edge:
         if DEBUG: print("Edge: ", self.grEdge.posSource, "to", self.grEdge.posDestination)
 
         self.scene.graphicsScene.addItem(self.grEdge)
+        self.scene.addEdge(self)
+
+    def __str__(self):
+        return "<Edge %s..%s>" % (hex(id(self))[2:5], hex(id(self))[-3:])
+
 
     def updatePositions(self):
             source_pos = list(self.start_socket.getSocketPosition())
@@ -40,6 +45,9 @@ class Edge:
                 end_pos[0] += self.end_socket.node.grNode.pos().x()
                 end_pos[1] += self.end_socket.node.grNode.pos().y()
                 self.grEdge.setDestination(*end_pos)
+            else:
+                self.grEdge.setDestination(*source_pos)
+
             if DEBUG: print(" SS:", self.start_socket)
             if DEBUG: print(" ES:", self.end_socket)
             self.grEdge.update()
@@ -54,7 +62,7 @@ class Edge:
 
     def remove(self):
             self.remove_from_sockets()
-            self.scene.grScene.removeItem(self.grEdge)
+            self.scene.graphicsScene.removeItem(self.grEdge)
             self.grEdge = None
             self.scene.removeEdge(self)
 
