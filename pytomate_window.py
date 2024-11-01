@@ -5,6 +5,7 @@ from PyQt5.QtCore import *
 from pytomate_widget import PytomateWidget
 
 
+
 class PytomateWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -126,21 +127,33 @@ class PytomateWindow(QMainWindow):
                 self.setTitle()
 
     def onFileSave(self):
-        if self.getCurrentNodeEditorWidget().filename is None: return self.onFileSaveAs()
-        self.getCurrentNodeEditorWidget().fileSave()
-        self.statusBar().showMessage("Successfully saved %s" % self.getCurrentNodeEditorWidget().filename)
-        self.setTitle()
-        return True
+        current_pytomate = self.getCurrentNodeEditorWidget()
+        if current_pytomate is not None:
+            if not current_pytomate.isFilenameSet(): return self.onFileSaveAs()
+
+            current_pytomate.fileSave()
+            self.statusBar().showMessage("Successfully saved %s" % current_pytomate.filename, 5000)
+
+            # support for MDI app
+            if hasattr(current_pytomate, "setTitle"): current_pytomate.setTitle()
+            else: self.setTitle()
+            return True
 
 
     def onFileSaveAs(self):
-        fname, filter = QFileDialog.getSaveFileName(self, 'Save automation graph to file')
-        if fname == '':
-            return False
-        self.getCurrentNodeEditorWidget().fileSave(fname)
-        self.statusBar().showMessage("Successfully saved as %s" % self.getCurrentNodeEditorWidget().filename)
-        self.setTitle()
-        return True
+        current_pytomate = self.getCurrentNodeEditorWidget()
+        if current_pytomate is not None:
+            fname, filter = QFileDialog.getSaveFileName(self, 'Save graph to file')
+            if fname == '': return False
+
+            current_pytomate.fileSave(fname)
+            self.statusBar().showMessage("Successfully saved as %s" % current_pytomate.filename, 5000)
+
+            # support for MDI app
+            if hasattr(current_pytomate, "setTitle"): current_pytomate.setTitle()
+            else: self.setTitle()
+            return True
+
 
 
     def onEditUndo(self):

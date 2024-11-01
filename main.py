@@ -1,6 +1,10 @@
+import os
 from PyQt5.QtWidgets import *
 import sys
 from pytomate_mdi_window import PytomateMdiWindow
+
+sys.path.insert(0, os.path.join( os.path.dirname(__file__), "..", ".." ))
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
