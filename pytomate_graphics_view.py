@@ -20,6 +20,8 @@ DEBUG = True
 
 
 class OurQGraphicsView(QGraphicsView):
+    scenePosChanged = pyqtSignal(int, int)
+
     def __init__(self, graphicsScene, parent=None):
         super().__init__(parent)
         self.graphicsScene = graphicsScene
@@ -164,6 +166,12 @@ class OurQGraphicsView(QGraphicsView):
                 self.dragEdge.grEdge.setDestination(pos.x(), pos.y())
                 self.dragEdge.grEdge.update()
 
+            self.last_scene_mouse_position = self.mapToScene(event.pos())
+
+            self.scenePosChanged.emit(
+                int(self.last_scene_mouse_position.x()), int(self.last_scene_mouse_position.y())
+            )
+
             super().mouseMoveEvent(event)
 
     def getItemAtClick(self, event):
@@ -236,15 +244,15 @@ class OurQGraphicsView(QGraphicsView):
         if not clamped or self.zoomClamp is False:
             self.scale(zoomFactor, zoomFactor)
 
-    def keyPressEvent(self, event):
-        if event.key() == Qt.Key_Delete:
-            self.deleteSelected(event)
-        elif event.key() == Qt.Key_S and event.modifiers() & Qt.ControlModifier:
-            self.graphicsScene.scene.saveToFile("graph.json.txt")
-        elif event.key() == Qt.Key_L and event.modifiers() & Qt.ControlModifier:
-            self.graphicsScene.scene.loadFromFile("graph.json.txt")
-        else:
-            super().keyPressEvent(event)
+    # def keyPressEvent(self, event):
+    #     if event.key() == Qt.Key_Delete:
+    #         self.deleteSelected(event)
+    #     elif event.key() == Qt.Key_S and event.modifiers() & Qt.ControlModifier:
+    #         self.graphicsScene.scene.saveToFile("graph.json.txt")
+    #     elif event.key() == Qt.Key_L and event.modifiers() & Qt.ControlModifier:
+    #         self.graphicsScene.scene.loadFromFile("graph.json.txt")
+    #     else:
+    #         super().keyPressEvent(event)
 
     def deleteSelected(self, event):
         for item in self.graphicsScene.selectedItems():

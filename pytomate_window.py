@@ -1,56 +1,77 @@
+import os
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from pytomate_graphics_scene import OurQGraphicsScene
-from pytomate_graphics_view import OurQGraphicsView
-from pytomate_scene import Scene
-from pytomate_node import Node
-from pytomate_edge import Edge, EDGE_TYPE_BEZIER
-
-from pytomate_socket import Socket
-
-class PytomateWindow(QWidget):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.stylesheet_filename = 'qss/nodestyle.qss'
-        self.loadStylesheet(self.stylesheet_filename)
+from pytomate_widget import PytomateWidget
 
 
-        self.initialise_ui()
+class PytomateWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+
+        self.initUI()
+
+        self.filename = None
 
 
-    def initialise_ui(self):
+    def createAct(self, name, shortcut, tooltip, callback):
+        act = QAction(name, self)
+        act.setShortcut(shortcut)
+        act.setToolTip(tooltip)
+        act.triggered.connect(callback)
+        return act
+
+    def initUI(self):
+        menubar = self.menuBar()
+
+        # initialize Menu
+        fileMenu = menubar.addMenu('&File')
+        fileMenu.addAction(self.createAct('&New', 'Ctrl+N', "Create new automation", self.onFileNew))
+        fileMenu.addSeparator()
+        fileMenu.addAction(self.createAct('&Open', 'Ctrl+O', "Open file", self.onFileOpen))
+        fileMenu.addAction(self.createAct('&Save', 'Ctrl+S', "Save file", self.onFileSave))
+        fileMenu.addAction(self.createAct('Save &As...', 'Ctrl+Shift+S', "Save file as...", self.onFileSaveAs))
+        fileMenu.addSeparator()
+        fileMenu.addAction(self.createAct('E&xit', 'Ctrl+Q', "Exit application", self.close))
+
+        editMenu = menubar.addMenu('&Edit')
+        editMenu.addAction(self.createAct('&Delete', 'Del', "Delete selected items", self.onEditDelete))
+
+        pytomate = PytomateWidget(self)
+        self.setCentralWidget(pytomate)
+
+        self.statusBar().showMessage("")
+        self.status_mouse_pos = QLabel("")
+        self.statusBar().addPermanentWidget(self.status_mouse_pos)
+        pytomate.view.scenePosChanged.connect(self.onScenePosChanged)
+
+
         self.setGeometry(300, 150, 1280, 720)
-        self.layout = QVBoxLayout()
-        self.layout.setContentsMargins(0, 0, 0, 0)
-        self.setLayout(self.layout)
-        self.Scene = Scene()
-
-        self.addNodes()
-
-        self.view = OurQGraphicsView(self.Scene.graphicsScene, self)
-        self.layout.addWidget(self.view)
-
         self.setWindowTitle("Pytomate")
-
         self.show()
 
-    def addNodes(self):
-        node1 = Node(self.Scene, "Note ", inputs=[1,2,3], outputs=[1])
-        node2 = Node(self.Scene, "Note", inputs=[1,2,3], outputs=[1])
-        node3 = Node(self.Scene, "Note", inputs=[1,2,3], outputs=[1])
-        node1.setPos(-350, -250)
-        node2.setPos(-75, 0)
-        node3.setPos(200, -150)
+    def onScenePosChanged(self, x, y):
+        self.status_mouse_pos.setText("Scene Pos: [%d, %d]" % (x, y))
 
-        edge1 = Edge(self.Scene, node1.outputs[0], node2.inputs[0], edge_type=EDGE_TYPE_BEZIER)
-        edge2 = Edge(self.Scene, node2.outputs[0], node3.inputs[0], edge_type=EDGE_TYPE_BEZIER)
+    def onFileNew(self):
+        self.centralWidget().Scene.clear()
 
+    def onFileOpen(self):
+        fname, filter = QFileDialog.getOpenFileName(self, 'Open graph from file')
+        if fname == '':
+            return
+        if os.path.isfile(fname):
+            self.centralWidget().Scene.loadFromFile(fname)
 
+    def onFileSave(self):
+        if self.filename is None: return self.onFileSaveAs()
+        self.centralWidget().Scene.saveToFile(self.filename)
+        self.statusBar().showMessage("Successfully saved %s" % self.filename)
 
-    def loadStylesheet(self, filename):
-        print('STYLE loading:', filename)
-        file = QFile(filename)
-        file.open(QFile.ReadOnly | QFile.Text)
-        stylesheet = file.readAll()
-        QApplication.instance().setStyleSheet(str(stylesheet, encoding='utf-8'))
+    def onFileSaveAs(self):
+        fname, filter = QFileDialog.getSaveFileName(self, 'Save graph to file')
+        if fname == '':
+            return
+        self.filename = fname
+        self.onFileSave()
+
+    def onEditDelete(self):
+        self.centralWidget().Scene.graphicsScene.views()[0].deleteSelected(self)
