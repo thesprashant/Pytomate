@@ -51,7 +51,7 @@ class OurGraphicsNode(QGraphicsItem):
 
         if self.wasMoved:
             self.wasMoved = False
-            self.node.scene.history.storeHistory("Node moved")
+            self.node.scene.history.storeHistory("Node moved", setModified=True)
 
 
     @property
