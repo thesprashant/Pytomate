@@ -1,6 +1,8 @@
+import os
 import json
 from collections import OrderedDict
 from pytomate_serializable import Serializable
+from pytomate_utils import dumpException
 from pytomate_graphics_scene import OurQGraphicsScene
 from pytomate_node import Node
 from pytomate_edge import Edge
@@ -8,6 +10,8 @@ from pytomate_scene_history import SceneHistory
 from pytomate_scene_clipboard import SceneClipboard
 
 
+
+class InvalidFile(Exception): pass
 
 
 
@@ -78,10 +82,14 @@ class Scene(Serializable):
     def loadFromFile(self, filename):
         with open(filename, "r") as file:
             raw_data = file.read()
-            data = json.loads(raw_data)
-            self.deserialize(data)
-            self.has_been_modified = False
-
+            try:
+                data = json.loads(raw_data)
+                self.deserialize(data)
+                self.has_been_modified = False
+            except json.JSONDecodeError:
+                raise InvalidFile("%s is not a valid JSON file" % os.path.basename(filename))
+            except Exception as e:
+                dumpException(e)
 
     def serialize(self):
         nodes, edges = [], []

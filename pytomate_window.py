@@ -1,74 +1,80 @@
 import os
 import json
 from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
 from pytomate_widget import PytomateWidget
 
 
 class PytomateWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-
-        self.filename = None
+        self.name_company = 'Pytomate'
+        self.name_product = 'Pytomate'
 
         self.initUI()
 
-
-
-
-    def createAct(self, name, shortcut, tooltip, callback):
-        act = QAction(name, self)
-        act.setShortcut(shortcut)
-        act.setToolTip(tooltip)
-        act.triggered.connect(callback)
-        return act
-
     def initUI(self):
-        menubar = self.menuBar()
-
-        # initialize Menu
-        fileMenu = menubar.addMenu('&File')
-        fileMenu.addAction(self.createAct('&New', 'Ctrl+N', "Create new graph", self.onFileNew))
-        fileMenu.addSeparator()
-        fileMenu.addAction(self.createAct('&Open', 'Ctrl+O', "Open file", self.onFileOpen))
-        fileMenu.addAction(self.createAct('&Save', 'Ctrl+S', "Save file", self.onFileSave))
-        fileMenu.addAction(self.createAct('Save &As...', 'Ctrl+Shift+S', "Save file as...", self.onFileSaveAs))
-        fileMenu.addSeparator()
-        fileMenu.addAction(self.createAct('E&xit', 'Ctrl+Q', "Exit application", self.close))
-
-        editMenu = menubar.addMenu('&Edit')
-        editMenu.addAction(self.createAct('&Undo', 'Ctrl+Z', "Undo last operation", self.onEditUndo))
-        editMenu.addAction(self.createAct('&Redo', 'Ctrl+Shift+Z', "Redo last operation", self.onEditRedo))
-        editMenu.addSeparator()
-        editMenu.addAction(self.createAct('Cu&t', 'Ctrl+X', "Cut to clipboard", self.onEditCut))
-        editMenu.addAction(self.createAct('&Copy', 'Ctrl+C', "Copy to clipboard", self.onEditCopy))
-        editMenu.addAction(self.createAct('&Paste', 'Ctrl+V', "Paste from clipboard", self.onEditPaste))
-        editMenu.addSeparator()
-        editMenu.addAction(self.createAct('&Delete', 'Del', "Delete selected items", self.onEditDelete))
+        self.createActions()
+        self.createMenus()
 
 
-        pytomate = PytomateWidget(self)
-        pytomate.Scene.addHasBeenModifiedListener(self.changeTitle)
-        self.setCentralWidget(pytomate)
+        self.pytomate = PytomateWidget(self)
+        self.pytomate.Scene.addHasBeenModifiedListener(self.setTitle)
+        self.setCentralWidget(self.pytomate)
 
+        self.createStatusBar()
+
+        self.setGeometry(300, 150, 1280, 720)
+        self.setTitle()
+        self.show()
+
+    def createStatusBar(self):
         self.statusBar().showMessage("")
         self.status_mouse_pos = QLabel("")
         self.statusBar().addPermanentWidget(self.status_mouse_pos)
-        pytomate.view.scenePosChanged.connect(self.onScenePosChanged)
+        self.nodeeditor.view.scenePosChanged.connect(self.onScenePosChanged)
+
+    def createActions(self):
+        self.actNew = QAction('&New', self, shortcut='Ctrl+N', statusTip="Create new Automation", triggered=self.onFileNew)
+        self.actOpen = QAction('&Open', self, shortcut='Ctrl+O', statusTip="Open file", triggered=self.onFileOpen)
+        self.actSave = QAction('&Save', self, shortcut='Ctrl+S', statusTip="Save file", triggered=self.onFileSave)
+        self.actSaveAs = QAction('Save &As...', self, shortcut='Ctrl+Shift+S', statusTip="Save file as...", triggered=self.onFileSaveAs)
+        self.actExit = QAction('E&xit', self, shortcut='Ctrl+Q', statusTip="Exit application", triggered=self.close)
+
+        self.actUndo = QAction('&Undo', self, shortcut='Ctrl+Z', statusTip="Undo last operation", triggered=self.onEditUndo)
+        self.actRedo = QAction('&Redo', self, shortcut='Ctrl+Shift+Z', statusTip="Redo last operation", triggered=self.onEditRedo)
+        self.actCut = QAction('Cu&t', self, shortcut='Ctrl+X', statusTip="Cut to clipboard", triggered=self.onEditCut)
+        self.actCopy = QAction('&Copy', self, shortcut='Ctrl+C', statusTip="Copy to clipboard", triggered=self.onEditCopy)
+        self.actPaste = QAction('&Paste', self, shortcut='Ctrl+V', statusTip="Paste from clipboard", triggered=self.onEditPaste)
+        self.actDelete = QAction('&Delete', self, shortcut='Del', statusTip="Delete selected items", triggered=self.onEditDelete)
 
 
-        self.setGeometry(300, 150, 1280, 720)
-        self.changeTitle()
-        self.show()
+    def createMenus(self):
+        menubar = self.menuBar()
 
-    def changeTitle(self):
+        self.fileMenu = menubar.addMenu('&File')
+        self.fileMenu.addAction(self.actNew)
+        self.fileMenu.addSeparator()
+        self.fileMenu.addAction(self.actOpen)
+        self.fileMenu.addAction(self.actSave)
+        self.fileMenu.addAction(self.actSaveAs)
+        self.fileMenu.addSeparator()
+        self.fileMenu.addAction(self.actExit)
+
+        self.editMenu = menubar.addMenu('&Edit')
+        self.editMenu.addAction(self.actUndo)
+        self.editMenu.addAction(self.actRedo)
+        self.editMenu.addSeparator()
+        self.editMenu.addAction(self.actCut)
+        self.editMenu.addAction(self.actCopy)
+        self.editMenu.addAction(self.actPaste)
+        self.editMenu.addSeparator()
+        self.editMenu.addAction(self.actDelete)
+
+
+    def setTitle(self):
         title = "Node Editor - "
-        if self.filename is None:
-            title += "New"
-        else:
-            title += os.path.basename(self.filename)
-
-        if self.centralWidget().Scene.has_been_modified:
-            title += "*"
+        title += self.getCurrentNodeEditorWidget().getUserFriendlyFilename()
 
         self.setWindowTitle(title)
 
@@ -80,7 +86,10 @@ class PytomateWindow(QMainWindow):
             event.ignore()
 
     def isModified(self):
-        return self.centralWidget().Scene.has_been_modified
+        return self.getCurrentNodeEditorWidget().Scene.has_been_modified
+
+    def getCurrentNodeEditorWidget(self):
+        return self.centralWidget()
 
     def maybeSave(self):
         if not self.isModified():
@@ -105,54 +114,51 @@ class PytomateWindow(QMainWindow):
 
     def onFileNew(self):
         if self.maybeSave():
-            self.centralWidget().Scene.clear()
-            self.filename = None
-            self.changeTitle()
+            self.getCurrentNodeEditorWidget().fileNew()
+            self.setTitle()
 
 
     def onFileOpen(self):
         if self.maybeSave():
-            fname, filter = QFileDialog.getOpenFileName(self, 'Open graph from file')
-            if fname == '':
-                return
-            if os.path.isfile(fname):
-                self.centralWidget().Scene.loadFromFile(fname)
-                self.filename = fname
-                self.changeTitle()
-
+            fname, filter = QFileDialog.getOpenFileName(self, 'Open automation graph from file')
+            if fname != '' and os.path.isfile(fname):
+                self.getCurrentNodeEditorWidget().fileLoad(fname)
+                self.setTitle()
 
     def onFileSave(self):
-        if self.filename is None: return self.onFileSaveAs()
-        self.centralWidget().Scene.saveToFile(self.filename)
-        self.statusBar().showMessage("Successfully saved %s" % self.filename)
+        if self.getCurrentNodeEditorWidget().filename is None: return self.onFileSaveAs()
+        self.getCurrentNodeEditorWidget().fileSave()
+        self.statusBar().showMessage("Successfully saved %s" % self.getCurrentNodeEditorWidget().filename)
+        self.setTitle()
         return True
 
 
     def onFileSaveAs(self):
-        fname, filter = QFileDialog.getSaveFileName(self, 'Save graph to file')
+        fname, filter = QFileDialog.getSaveFileName(self, 'Save automation graph to file')
         if fname == '':
             return False
-        self.filename = fname
-        self.onFileSave()
+        self.getCurrentNodeEditorWidget().fileSave(fname)
+        self.statusBar().showMessage("Successfully saved as %s" % self.getCurrentNodeEditorWidget().filename)
+        self.setTitle()
         return True
 
 
     def onEditUndo(self):
-        self.centralWidget().Scene.history.undo()
+        self.getCurrentNodeEditorWidget().Scene.history.undo()
 
     def onEditRedo(self):
-        self.centralWidget().Scene.history.redo()
+        self.getCurrentNodeEditorWidget().Scene.history.redo()
 
     def onEditDelete(self):
-        self.centralWidget().Scene.graphicsScene.views()[0].deleteSelected(self)
+        self.getCurrentNodeEditorWidget().Scene.graphicsScene.views()[0].deleteSelected(self)
 
     def onEditCut(self):
-        data = self.centralWidget().Scene.clipboard.serializeSelected(delete=True)
+        data = self.getCurrentNodeEditorWidget().Scene.clipboard.serializeSelected(delete=True)
         str_data = json.dumps(data, indent=4)
         QApplication.instance().clipboard().setText(str_data)
 
     def onEditCopy(self):
-        data = self.centralWidget().Scene.clipboard.serializeSelected(delete=False)
+        data = self.getCurrentNodeEditorWidget().Scene.clipboard.serializeSelected(delete=False)
         str_data = json.dumps(data, indent=4)
         QApplication.instance().clipboard().setText(str_data)
 
@@ -170,4 +176,16 @@ class PytomateWindow(QMainWindow):
             print("JSON does not contain any nodes!")
             return
 
-        self.centralWidget().Scene.clipboard.deserializeFromClipboard(data)
+        self.getCurrentNodeEditorWidget().Scene.clipboard.deserializeFromClipboard(data)
+
+    def readSettings(self):
+        settings = QSettings(self.name_company, self.name_product)
+        pos = settings.value('pos', QPoint(200, 200))
+        size = settings.value('size', QSize(400, 400))
+        self.move(pos)
+        self.resize(size)
+
+    def writeSettings(self):
+        settings = QSettings(self.name_company, self.name_product)
+        settings.setValue('pos', self.pos())
+        settings.setValue('size', self.size())

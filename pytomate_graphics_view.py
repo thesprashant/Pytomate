@@ -255,7 +255,7 @@ class OurQGraphicsView(QGraphicsView):
             self.graphicsScene.scene.history.redo()
         elif event.key() == Qt.Key_H:
             ix = 0
-            for item in self.grScene.scene.history.history_stack:
+            for item in self.graphicsScene.scene.history.history_stack:
                 print("#", ix, "--", item['desc'])
                 ix += 1
         else:

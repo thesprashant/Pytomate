@@ -1,9 +1,10 @@
+import os
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from pytomate_graphics_scene import OurQGraphicsScene
 from pytomate_graphics_view import OurQGraphicsView
-from pytomate_scene import Scene
+from pytomate_scene import Scene, InvalidFile
 from pytomate_node import Node
 from pytomate_edge import Edge, EDGE_TYPE_BEZIER
 
@@ -15,6 +16,7 @@ class PytomateWidget(QWidget):
         self.stylesheet_filename = 'qss/nodestyle.qss'
         self.loadStylesheet(self.stylesheet_filename)
 
+        self.filename = None
 
         self.initialise_ui()
 
@@ -34,6 +36,45 @@ class PytomateWidget(QWidget):
         self.setWindowTitle("Pytomate")
 
         self.show()
+
+    def isModified(self):
+        return self.Scene.has_been_modified
+
+    def isFilenameSet(self):
+        return self.filename is not None
+
+    def getUserFriendlyFilename(self):
+        name = os.path.basename(self.filename) if self.isFilenameSet() else "New Automation Graph"
+        return name + ("*" if self.isModified() else "")
+
+    def fileNew(self):
+        self.Scene.clear()
+        self.filename = None
+
+    def fileLoad(self, filename):
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+        try:
+            self.Scene.loadFromFile(filename)
+            self.filename = filename
+            # clear history
+            return True
+        except InvalidFile as e:
+            print(e)
+            QApplication.restoreOverrideCursor()
+            QMessageBox.warning(self, "Error loading %s" % os.path.basename(filename), str(e))
+            return False
+        finally:
+            QApplication.restoreOverrideCursor()
+
+
+    def fileSave(self, filename=None):
+        # when called with empty parameter, we won't store the filename
+        if filename is not None: self.filename = filename
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+        self.Scene.saveToFile(self.filename)
+        QApplication.restoreOverrideCursor()
+        return True
+
 
     def addNodes(self):
         node1 = Node(self.Scene, "Note ", inputs=[1,2,3], outputs=[1])
