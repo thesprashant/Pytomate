@@ -5,6 +5,8 @@ from pytomate_graphics_scene import OurQGraphicsScene
 from pytomate_node import Node
 from pytomate_edge import Edge
 from pytomate_scene_history import SceneHistory
+from pytomate_scene_clipboard import SceneClipboard
+
 
 
 
@@ -18,6 +20,8 @@ class Scene(Serializable):
         self.scene_height = 70000
         self.initui()
         self.history = SceneHistory(self)
+        self.clipboard = SceneClipboard(self)
+
 
 
     def initui(self):
@@ -64,19 +68,23 @@ class Scene(Serializable):
             ('edges', edges),
         ])
 
-    def deserialize(self, data, hashmap={}):
+    def deserialize(self, data, hashmap={}, restore_id=True):
         print("deserializating data", data)
 
         self.clear()
         hashmap = {}
+        if restore_id: self.id = data['id']
+
 
         # create nodes
         for node_data in data['nodes']:
-            Node(self).deserialize(node_data, hashmap)
+            Node(self).deserialize(node_data, hashmap, restore_id)
+
 
         # create edges
         for edge_data in data['edges']:
-            Edge(self).deserialize(edge_data, hashmap)
+            Edge(self).deserialize(edge_data, hashmap, restore_id)
+
 
         return True
 

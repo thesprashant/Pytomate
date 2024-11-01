@@ -29,6 +29,7 @@ class OurQGraphicsView(QGraphicsView):
         self.initui()
 
         self.mode = MODE_NOOP
+        self.rubberBandDraggingRectangle = False
 
         self.zoomInFactor = 1.25
         self.zoomOutFactor = 1 / self.zoomInFactor
@@ -83,7 +84,7 @@ class OurQGraphicsView(QGraphicsView):
         fakeEvent = QMouseEvent(event.type(), event.localPos(), event.screenPos(),
                                 Qt.LeftButton, event.buttons() & -Qt.LeftButton, event.modifiers())
         super().mousePressEvent(fakeEvent)
-        self.setDragMode(QGraphicsView.NoDrag)
+        self.setDragMode(QGraphicsView.RubberBandDrag)
 
     def leftMouseButtonPress(self, event):
         item = self.getItemAtClick(event)
@@ -111,6 +112,10 @@ class OurQGraphicsView(QGraphicsView):
         if self.mode == MODE_EDGE_DRAG:
             res = self.edgeDragEnd(item)
             if res: return
+
+        if item is None:
+            self.rubberBandDraggingRectangle = True
+
         super().mousePressEvent(event)
 
     def rightMouseButtonPress(self, event):
@@ -152,9 +157,9 @@ class OurQGraphicsView(QGraphicsView):
                 res = self.edgeDragEnd(item)
                 if res: return
 
-        if self.dragMode() == QGraphicsView.RubberBandDrag:
+        if self.rubberBandDraggingRectangle:
             self.grScene.scene.history.storeHistory("Selection changed")
-
+            self.rubberBandDraggingRectangle = False
         super().mouseReleaseEvent(event)
 
 
