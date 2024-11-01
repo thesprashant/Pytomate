@@ -5,7 +5,7 @@ from PyQt5.QtCore import *
 from pytomate_window import PytomateWindow
 from pytomate_sub_window import PytomateSubWindow
 from pytomate_utils import dumpException, pp
-
+from pytomate_draglist import OurDragListBox
 
 class PytomateMdiWindow(PytomateWindow):
 
@@ -26,13 +26,13 @@ class PytomateMdiWindow(PytomateWindow):
         self.windowMapper = QSignalMapper(self)
         self.windowMapper.mapped[QWidget].connect(self.setActiveSubWindow)
 
+        self.createElementDock()
         self.createActions()
         self.createMenus()
         self.createToolBars()
         self.createStatusBar()
         self.updateMenus()
 
-        self.createNodesDock()
 
         self.readSettings()
 
@@ -158,6 +158,16 @@ class PytomateMdiWindow(PytomateWindow):
 
     def updateWindowMenu(self):
         self.windowMenu.clear()
+
+        toolbar_elements = self.windowMenu.addAction("Elements Toolbar")
+        toolbar_elements.setCheckable(True)
+        toolbar_elements.triggered.connect(self.onWindowNodesToolbar)
+        toolbar_elements.setChecked(self.elementsDock.isVisible())
+
+        self.windowMenu.addSeparator()
+
+
+
         self.windowMenu.addAction(self.actClose)
         self.windowMenu.addAction(self.actCloseAll)
         self.windowMenu.addSeparator()
@@ -184,21 +194,25 @@ class PytomateMdiWindow(PytomateWindow):
             action.triggered.connect(self.windowMapper.map)
             self.windowMapper.setMapping(action, window)
 
+    def onWindowNodesToolbar(self):
+        if self.elementsDock.isVisible():
+            self.elementsDock.hide()
+        else:
+            self.elementsDock.show()
+
+
     def createToolBars(self):
         pass
 
-    def createNodesDock(self):
-        self.listWidget = QListWidget()
-        self.listWidget.addItem("Input")
-        self.listWidget.addItem("Output")
-        self.listWidget.addItem("Exec")
-        self.listWidget.addItem("Result")
+    def createElementDock(self):
+        self.elementsListWidget = OurDragListBox()
 
-        self.items = QDockWidget("Elements")
-        self.items.setWidget(self.listWidget)
-        self.items.setFloating(False)
+        self.elementsDock = QDockWidget("Elements")
+        self.elementsDock.setWidget(self.elementsListWidget)
+        self.elementsDock.setFloating(False)
 
-        self.addDockWidget(Qt.RightDockWidgetArea, self.items)
+        self.addDockWidget(Qt.RightDockWidgetArea, self.elementsDock)
+
 
     def createStatusBar(self):
         self.statusBar().showMessage("Ready")
