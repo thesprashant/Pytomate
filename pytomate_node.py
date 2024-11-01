@@ -4,7 +4,7 @@ from pytomate_content_widget import OurNodeContentWidget
 from pytomate_graphics_node import OurGraphicsNode
 from pytomate_socket import *
 
-
+DEBUG = False
 class Node(Serializable):
     def __init__(self, scene, title="Undefined Node", inputs=[], outputs=[]):
         super().__init__()
@@ -64,6 +64,22 @@ class Node(Serializable):
         for socket in self.inputs + self.outputs:
             if socket.hasEdge():
                 socket.edge.updatePositions()
+
+    def remove(self):
+        if DEBUG: print("> Removing Node", self)
+        if DEBUG: print(" - remove all edges from sockets")
+        for socket in (self.inputs+self.outputs):
+            if socket.hasEdge():
+                if DEBUG: print("    - removing from socket:", socket, "edge:", socket.edge)
+                socket.edge.remove()
+        if DEBUG: print(" - remove grNode")
+        self.scene.graphicsScene.removeItem(self.grNode)
+        self.grNode = None
+        if DEBUG: print(" - remove node from the scene")
+        self.scene.removeNode(self)
+        if DEBUG: print(" - everything was done.")
+
+
     def serialize(self):
         inputs, outputs = [], []
         for socket in self.inputs: inputs.append(socket.serialize())

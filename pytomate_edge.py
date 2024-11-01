@@ -30,8 +30,6 @@ class Edge(Serializable):
 
         self.updatePositions()
 
-        if DEBUG: print("Edge: ", self.grEdge.posSource, "to", self.grEdge.posDestination)
-
         self.scene.graphicsScene.addItem(self.grEdge)
         self.scene.addEdge(self)
 
@@ -65,10 +63,17 @@ class Edge(Serializable):
             self.start_socket = None
 
     def remove(self):
-            self.remove_from_sockets()
-            self.scene.graphicsScene.removeItem(self.grEdge)
-            self.grEdge = None
+        if DEBUG: print("# Removing Edge", self)
+        if DEBUG: print(" - remove edge from all sockets")
+        self.remove_from_sockets()
+        self.scene.graphicsScene.removeItem(self.grEdge)
+        self.grEdge = None
+        if DEBUG: print(" - remove edge from scene")
+        try:
             self.scene.removeEdge(self)
+        except ValueError:
+            pass
+        if DEBUG: print(" - everything is done.")
 
 
     def serialize(self):

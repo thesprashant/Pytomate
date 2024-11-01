@@ -237,6 +237,18 @@ class OurQGraphicsView(QGraphicsView):
             self.scale(zoomFactor, zoomFactor)
 
     def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Delete:
+            self.deleteSelected(event)
+        else:
+            super().keyPressEvent(event)
+
+    def deleteSelected(self, event):
+        for item in self.graphicsScene.selectedItems():
+            if isinstance(item, OurGraphicsEdge):
+                item.edge.remove()
+            elif hasattr(item, 'node'):
+                item.node.remove()
+
         if event.key() == Qt.Key_S and event.modifiers() & Qt.ControlModifier:
             self.graphicsScene.scene.saveToFile("graph.json.txt")
         elif event.key() == Qt.Key_L and event.modifiers() & Qt.ControlModifier:
