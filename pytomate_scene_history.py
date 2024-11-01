@@ -1,4 +1,5 @@
 from pytomate_graphics_edge import OurGraphicsEdge
+from pytomate_utils import dumpException
 
 
 DEBUG = True
@@ -8,21 +9,32 @@ class SceneHistory():
     def __init__(self, scene):
         self.scene = scene
 
-        self.history_stack = []
-        self.history_current_step = -1
+        self.clear()
         self.history_limit = 32
 
+    def clear(self):
+        self.history_stack = []
+        self.history_current_step = -1
+
+    def storeInitialHistoryStamp(self):
+        self.storeHistory("Initial History Stamp")
+
+    def canUndo(self):
+        return self.history_current_step > 0
+
+    def canRedo(self):
+        return self.history_current_step + 1 < len(self.history_stack)
 
     def undo(self):
         if DEBUG: print("UNDO")
 
-        if self.history_current_step > 0:
+        if self.canUndo():
             self.history_current_step -= 1
             self.restoreHistory()
 
     def redo(self):
         if DEBUG: print("REDO")
-        if self.history_current_step + 1 < len(self.history_stack):
+        if self.canRedo():
             self.history_current_step += 1
             self.restoreHistory()
 
@@ -80,18 +92,19 @@ class SceneHistory():
     def restoreHistoryStamp(self, history_stamp):
         if DEBUG: print("RHS: ", history_stamp['desc'])
 
-        self.scene.deserialize(history_stamp['snapshot'])
+        try:
+            self.scene.deserialize(history_stamp['snapshot'])
 
-        # restore selection
-        for edge_id in history_stamp['selection']['edges']:
-            for edge in self.scene.edges:
-                if edge.id == edge_id:
-                    edge.grEdge.setSelected(True)
-                    break
-
-        for node_id in history_stamp['selection']['nodes']:
-            for node in self.scene.nodes:
-                if node.id == node_id:
-                    node.grNode.setSelected(True)
-                    break
+            # restore selection
+            for edge_id in history_stamp['selection']['edges']:
+                for edge in self.scene.edges:
+                    if edge.id == edge_id:
+                        edge.grEdge.setSelected(True)
+                        break
+            for node_id in history_stamp['selection']['nodes']:
+                for node in self.scene.nodes:
+                    if node.id == node_id:
+                        node.grNode.setSelected(True)
+                        break
+        except Exception as e: dumpException(e)
 

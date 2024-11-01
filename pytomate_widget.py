@@ -28,7 +28,6 @@ class PytomateWidget(QWidget):
         self.setLayout(self.layout)
         self.Scene = Scene()
 
-        self.addNodes()
 
         self.view = OurQGraphicsView(self.Scene.graphicsScene, self)
         self.layout.addWidget(self.view)
@@ -38,10 +37,24 @@ class PytomateWidget(QWidget):
         self.show()
 
     def isModified(self):
-        return self.Scene.has_been_modified
+        return self.Scene.isModified()
+
 
     def isFilenameSet(self):
         return self.filename is not None
+
+    def getSelectedItems(self):
+        return self.Scene.getSelectedItems()
+
+    def hasSelectedItems(self):
+        return self.getSelectedItems() != []
+
+    def canUndo(self):
+        return self.Scene.history.canUndo()
+
+    def canRedo(self):
+        return self.Scene.history.canRedo()
+
 
     def getUserFriendlyFilename(self):
         name = os.path.basename(self.filename) if self.isFilenameSet() else "New Automation Graph"
@@ -50,13 +63,17 @@ class PytomateWidget(QWidget):
     def fileNew(self):
         self.Scene.clear()
         self.filename = None
+        self.Scene.history.clear()
+        self.Scene.history.storeInitialHistoryStamp()
 
     def fileLoad(self, filename):
         QApplication.setOverrideCursor(Qt.WaitCursor)
         try:
             self.Scene.loadFromFile(filename)
             self.filename = filename
-            # clear history
+            self.Scene.history.clear()
+            self.Scene.history.storeInitialHistoryStamp()
+
             return True
         except InvalidFile as e:
             print(e)
@@ -87,6 +104,7 @@ class PytomateWidget(QWidget):
         edge1 = Edge(self.Scene, node1.outputs[0], node2.inputs[0], edge_type=EDGE_TYPE_BEZIER)
         edge2 = Edge(self.Scene, node2.outputs[0], node3.inputs[0], edge_type=EDGE_TYPE_BEZIER)
 
+        self.Scene.history.storeInitialHistoryStamp()
 
 
     def loadStylesheet(self, filename):

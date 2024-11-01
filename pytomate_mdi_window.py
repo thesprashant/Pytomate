@@ -119,8 +119,11 @@ class PytomateMdiWindow(PytomateWindow):
         self.helpMenu = self.menuBar().addMenu("&Help")
         self.helpMenu.addAction(self.actAbout)
 
+        self.editMenu.aboutToShow.connect(self.updateEditMenu)
+
+
     def updateMenus(self):
-        print("update Menus")
+        #print("update Menus")
         active = self.getCurrentNodeEditorWidget()
         hasMdiChild = (active is not None)
 
@@ -133,6 +136,24 @@ class PytomateMdiWindow(PytomateWindow):
         self.actNext.setEnabled(hasMdiChild)
         self.actPrevious.setEnabled(hasMdiChild)
         self.actSeparator.setVisible(hasMdiChild)
+
+        self.updateEditMenu()
+
+    def updateEditMenu(self):
+        print("update Edit Menu")
+        active = self.getCurrentNodeEditorWidget()
+        hasMdiChild = (active is not None)
+
+        self.actPaste.setEnabled(hasMdiChild)
+
+        self.actCut.setEnabled(hasMdiChild and active.hasSelectedItems())
+        self.actCopy.setEnabled(hasMdiChild and active.hasSelectedItems())
+        self.actDelete.setEnabled(hasMdiChild and active.hasSelectedItems())
+
+        self.actUndo.setEnabled(hasMdiChild and active.canUndo())
+        self.actRedo.setEnabled(hasMdiChild and active.canRedo())
+
+
 
 
     def updateWindowMenu(self):
