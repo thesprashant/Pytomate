@@ -89,6 +89,16 @@ class OurQGraphicsView(QGraphicsView):
         # we store the position of last LMB click
         self.last_lmb_click_scene_pos = self.mapToScene(event.pos())
 
+        if hasattr(item, "node") or isinstance(item, OurGraphicsEdge):
+            if event.modifiers() & Qt.ShiftModifier:
+                if DEBUG: print("LMB + Shift on", item)
+                event.ignore()
+                fakeEvent = QMouseEvent(QEvent.MouseButtonPress, event.localPos(), event.screenPos(),
+                                        Qt.LeftButton, event.buttons() | Qt.LeftButton,
+                                        event.modifiers() | Qt.ControlModifier)
+                super().mousePressEvent(fakeEvent)
+                return
+
         # logic
         if type(item) is OurGraphicsSocket:
             if self.mode == MODE_NOOP:
@@ -123,6 +133,16 @@ class OurQGraphicsView(QGraphicsView):
         return super().mouseReleaseEvent(event)
         # get item which we release mouse button on
         item = self.getItemAtClick(event)
+
+        if hasattr(item, "node") or isinstance(item, OurGraphicsEdge):
+            if event.modifiers() & Qt.ShiftModifier:
+                if DEBUG: print("LMB Release + Shift on", item)
+                event.ignore()
+                fakeEvent = QMouseEvent(event.type(), event.localPos(), event.screenPos(),
+                                        Qt.LeftButton, Qt.NoButton,
+                                        event.modifiers() | Qt.ControlModifier)
+                super().mouseReleaseEvent(fakeEvent)
+                return
 
         # logic
         if self.mode == MODE_EDGE_DRAG:
