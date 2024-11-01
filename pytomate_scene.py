@@ -2,6 +2,9 @@ import json
 from collections import OrderedDict
 from pytomate_serializable import Serializable
 from pytomate_graphics_scene import OurQGraphicsScene
+from pytomate_node import Node
+from pytomate_edge import Edge
+
 
 
 class Scene(Serializable):
@@ -27,6 +30,10 @@ class Scene(Serializable):
 
     def removeEdge(self, edge):
         self.edges.remove(edge)
+
+    def clear(self):
+        while len(self.nodes) > 0:
+            self.nodes[0].remove()
 
 
     def saveToFile(self, filename):
@@ -55,4 +62,17 @@ class Scene(Serializable):
 
     def deserialize(self, data, hashmap={}):
         print("deserializating data", data)
-        return False
+
+        self.clear()
+        hashmap = {}
+
+        # create nodes
+        for node_data in data['nodes']:
+            Node(self).deserialize(node_data, hashmap)
+
+        # create edges
+        for edge_data in data['edges']:
+            Edge(self).deserialize(edge_data, hashmap)
+
+        return True
+

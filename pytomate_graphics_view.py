@@ -239,6 +239,10 @@ class OurQGraphicsView(QGraphicsView):
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Delete:
             self.deleteSelected(event)
+        elif event.key() == Qt.Key_S and event.modifiers() & Qt.ControlModifier:
+            self.graphicsScene.scene.saveToFile("graph.json.txt")
+        elif event.key() == Qt.Key_L and event.modifiers() & Qt.ControlModifier:
+            self.graphicsScene.scene.loadFromFile("graph.json.txt")
         else:
             super().keyPressEvent(event)
 
@@ -249,9 +253,4 @@ class OurQGraphicsView(QGraphicsView):
             elif hasattr(item, 'node'):
                 item.node.remove()
 
-        if event.key() == Qt.Key_S and event.modifiers() & Qt.ControlModifier:
-            self.graphicsScene.scene.saveToFile("graph.json.txt")
-        elif event.key() == Qt.Key_L and event.modifiers() & Qt.ControlModifier:
-            self.graphicsScene.scene.loadFromFile("graph.json.txt")
-        else:
-            super().keyPressEvent(event)
+
