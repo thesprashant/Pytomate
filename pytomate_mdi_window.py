@@ -140,7 +140,7 @@ class PytomateMdiWindow(PytomateWindow):
         self.updateEditMenu()
 
     def updateEditMenu(self):
-        print("update Edit Menu")
+        #print("update Edit Menu")
         active = self.getCurrentNodeEditorWidget()
         hasMdiChild = (active is not None)
 

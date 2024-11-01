@@ -2,7 +2,7 @@ from pytomate_graphics_edge import OurGraphicsEdge
 from pytomate_utils import dumpException
 
 
-DEBUG = True
+DEBUG = False
 
 
 class SceneHistory():

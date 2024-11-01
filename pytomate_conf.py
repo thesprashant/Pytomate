@@ -1,0 +1,6 @@
+LISTBOX_MIMETYPE = "application/x-item"
+
+OP_NODE_INPUT = 1
+OP_NODE_OUTPUT = 2
+OP_NODE_EXEC = 3
+OP_NODE_RESULT = 4

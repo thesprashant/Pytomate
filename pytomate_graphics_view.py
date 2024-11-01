@@ -38,6 +38,10 @@ class OurQGraphicsView(QGraphicsView):
         self.zoomStep = 1
         self.zoomRange = [0, 10]
 
+        self._drag_enter_listeners = []
+        self._drop_listeners = []
+
+
         self.setScene(self.graphicsScene)
     def initui(self):
         self.setRenderHints(QPainter.Antialiasing | QPainter.HighQualityAntialiasing | QPainter.TextAntialiasing | QPainter.SmoothPixmapTransform)
@@ -49,6 +53,23 @@ class OurQGraphicsView(QGraphicsView):
 
         self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
         self.setDragMode(QGraphicsView.RubberBandDrag)
+
+
+        # enable dropping
+        self.setAcceptDrops(True)
+
+
+    def dragEnterEvent(self, event):
+        for callback in self._drag_enter_listeners: callback(event)
+
+    def dropEvent(self, event):
+        for callback in self._drop_listeners: callback(event)
+
+    def addDragEnterListener(self, callback):
+        self._drag_enter_listeners.append(callback)
+
+    def addDropListener(self, callback):
+        self._drop_listeners.append(callback)
 
 
     def mousePressEvent(self, event):

@@ -21,6 +21,10 @@ class OurQGraphicsScene(QGraphicsScene):
 
         self.setBackgroundBrush(self._color_background)
 
+    def dragMoveEvent(self, event):
+        pass
+
+
     def setgraphicsScene(self, width, height):
         self.setSceneRect(-width // 2, -height // 2, width, height)
 

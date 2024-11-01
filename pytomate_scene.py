@@ -56,6 +56,13 @@ class Scene(Serializable):
     def addHasBeenModifiedListener(self, callback):
         self._has_been_modified_listeners.append(callback)
 
+    def addDragEnterListener(self, callback):
+        self.graphicsScene.views()[0].addDragEnterListener(callback)
+
+    def addDropListener(self, callback):
+        self.graphicsScene.views()[0].addDropListener(callback)
+
+
 
     def initui(self):
         self.graphicsScene = OurQGraphicsScene(self)
