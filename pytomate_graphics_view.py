@@ -297,7 +297,7 @@ class OurQGraphicsView(QGraphicsView):
         if DEBUG: print('View::edgeDragStart ~   assign Start Socket to:', item.socket)
         self.previousEdge = item.socket.edge
         self.last_start_socket = item.socket
-        self.dragEdge = Edge(self.grScene.scene, item.socket, None, EDGE_TYPE_BEZIER)
+        self.dragEdge = Edge(self.graphicsScene.scene, item.socket, None, EDGE_TYPE_BEZIER)
         if DEBUG: print('View::edgeDragStart ~   dragEdge:', self.dragEdge)
 
 
@@ -319,8 +319,8 @@ class OurQGraphicsView(QGraphicsView):
                 self.dragEdge.end_socket.setConnectedEdge(self.dragEdge)
                 if DEBUG: print('View::edgeDragEnd ~  reassigned start & end sockets to drag edge')
                 self.dragEdge.updatePositions()
-                self.grScene.scene.history.storeHistory("Created new edge by dragging")
-                self.grScene.scene.history.storeHistory("Created new edge by dragging", setModified=True)
+                self.graphicsScene.scene.history.storeHistory("Created new edge by dragging")
+                self.graphicsScene.scene.history.storeHistory("Created new edge by dragging", setModified=True)
                 return True
 
         if DEBUG: print('View::edgeDragEnd ~ End dragging edge')
