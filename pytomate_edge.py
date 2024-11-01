@@ -1,3 +1,5 @@
+from collections import OrderedDict
+from pytomate_serializable import Serializable
 from pytomate_graphics_edge import *
 
 
@@ -7,13 +9,15 @@ EDGE_TYPE_BEZIER = 2
 DEBUG = True
 
 
-class Edge:
+class Edge(Serializable):
     def __init__(self, scene, start_socket, end_socket, edge_type=EDGE_TYPE_DIRECT):
-
+        super().__init__()
         self.scene = scene
 
         self.start_socket = start_socket
         self.end_socket = end_socket
+        self.edge_type = edge_type
+
 
         self.grEdge = OurGraphicsEdgeDirect(self) if type==EDGE_TYPE_DIRECT else OurGraphicsEdgeBezier(self)
 
@@ -66,3 +70,14 @@ class Edge:
             self.grEdge = None
             self.scene.removeEdge(self)
 
+
+    def serialize(self):
+        return OrderedDict([
+            ('id', self.id),
+            ('edge_type', self.edge_type),
+            ('start', self.start_socket.id),
+            ('end', self.end_socket.id),
+        ])
+
+    def deserialize(self, data, hashmap={}):
+        return False

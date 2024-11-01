@@ -1,7 +1,10 @@
+from collections import OrderedDict
+from pytomate_serializable import Serializable
+
 from PyQt5.QtWidgets import *
 
 
-class OurNodeContentWidget(QWidget):
+class OurNodeContentWidget(QWidget, Serializable):
     def __init__(self, parent=None):
         super().__init__(parent)
 
@@ -18,3 +21,12 @@ class OurNodeContentWidget(QWidget):
         self.text=QTextEdit()
         self.text.setPlaceholderText("Enter Note: ")
         self.layout.addWidget(self.text)
+
+    def serialize(self):
+        return OrderedDict([
+
+        ])
+
+    def deserialize(self, data, hashmap={}):
+        return False
+

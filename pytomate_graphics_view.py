@@ -214,3 +214,10 @@ class OurQGraphicsView(QGraphicsView):
         if not clamped or self.zoomClamp is False:
             self.scale(zoomFactor, zoomFactor)
 
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_S and event.modifiers() & Qt.ControlModifier:
+            self.graphicsScene.scene.saveToFile("graph.json.txt")
+        elif event.key() == Qt.Key_L and event.modifiers() & Qt.ControlModifier:
+            self.graphicsScene.scene.loadFromFile("graph.json.txt")
+        else:
+            super().keyPressEvent(event)

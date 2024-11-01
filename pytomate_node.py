@@ -1,10 +1,13 @@
+from collections import OrderedDict
+from pytomate_serializable import Serializable
 from pytomate_content_widget import OurNodeContentWidget
 from pytomate_graphics_node import OurGraphicsNode
 from pytomate_socket import *
 
 
-class Node():
+class Node(Serializable):
     def __init__(self, scene, title="Undefined Node", inputs=[], outputs=[]):
+        super().__init__()
         self.scene = scene
 
         self.title = title
@@ -61,3 +64,19 @@ class Node():
         for socket in self.inputs + self.outputs:
             if socket.hasEdge():
                 socket.edge.updatePositions()
+    def serialize(self):
+        inputs, outputs = [], []
+        for socket in self.inputs: inputs.append(socket.serialize())
+        for socket in self.outputs: outputs.append(socket.serialize())
+        return OrderedDict([
+            ('id', self.id),
+            ('title', self.title),
+            ('pos_x', self.grNode.scenePos().x()),
+            ('pos_y', self.grNode.scenePos().y()),
+            ('inputs', inputs),
+            ('outputs', outputs),
+            ('content', self.content.serialize()),
+        ])
+
+    def deserialize(self, data, hashmap={}):
+        return False
