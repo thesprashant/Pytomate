@@ -4,6 +4,8 @@ from pytomate_serializable import Serializable
 from pytomate_graphics_scene import OurQGraphicsScene
 from pytomate_node import Node
 from pytomate_edge import Edge
+from pytomate_scene_history import SceneHistory
+
 
 
 
@@ -15,6 +17,8 @@ class Scene(Serializable):
         self.scene_width = 70000
         self.scene_height = 70000
         self.initui()
+        self.history = SceneHistory(self)
+
 
     def initui(self):
         self.graphicsScene = OurQGraphicsScene(self)

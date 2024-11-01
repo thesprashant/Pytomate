@@ -152,6 +152,8 @@ class OurQGraphicsView(QGraphicsView):
                 res = self.edgeDragEnd(item)
                 if res: return
 
+        if self.dragMode() == QGraphicsView.RubberBandDrag:
+            self.grScene.scene.history.storeHistory("Selection changed")
 
         super().mouseReleaseEvent(event)
 
@@ -244,15 +246,24 @@ class OurQGraphicsView(QGraphicsView):
         if not clamped or self.zoomClamp is False:
             self.scale(zoomFactor, zoomFactor)
 
-    # def keyPressEvent(self, event):
-    #     if event.key() == Qt.Key_Delete:
-    #         self.deleteSelected(event)
-    #     elif event.key() == Qt.Key_S and event.modifiers() & Qt.ControlModifier:
-    #         self.graphicsScene.scene.saveToFile("graph.json.txt")
-    #     elif event.key() == Qt.Key_L and event.modifiers() & Qt.ControlModifier:
-    #         self.graphicsScene.scene.loadFromFile("graph.json.txt")
-    #     else:
-    #         super().keyPressEvent(event)
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Delete:
+            self.deleteSelected(event)
+        elif event.key() == Qt.Key_S and event.modifiers() & Qt.ControlModifier:
+            self.graphicsScene.scene.saveToFile("graph.json.txt")
+        elif event.key() == Qt.Key_L and event.modifiers() & Qt.ControlModifier:
+            self.graphicsScene.scene.loadFromFile("graph.json.txt")
+        elif event.key() == Qt.Key_Z and event.modifiers() & Qt.ControlModifier and not event.modifiers() & Qt.ShiftModifier:
+            self.graphicsScene.scene.history.undo()
+        elif event.key() == Qt.Key_Z and event.modifiers() & Qt.ControlModifier and event.modifiers() & Qt.ShiftModifier:
+            self.graphicsScene.scene.history.redo()
+        elif event.key() == Qt.Key_H:
+            ix = 0
+            for item in self.grScene.scene.history.history_stack:
+                print("#", ix, "--", item['desc'])
+                ix += 1
+        else:
+            super().keyPressEvent(event)
 
     def deleteSelected(self, event):
         for item in self.graphicsScene.selectedItems():
@@ -260,5 +271,6 @@ class OurQGraphicsView(QGraphicsView):
                 item.edge.remove()
             elif hasattr(item, 'node'):
                 item.node.remove()
+        self.graphicsScene.scene.history.storeHistory("Delete selected")
 
 
