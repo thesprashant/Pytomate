@@ -72,16 +72,16 @@ class Node(Serializable):
 
     def updateConnectedEdges(self):
         for socket in self.inputs + self.outputs:
-            if socket.hasEdge():
-                socket.edge.updatePositions()
+            for edge in socket.edges:
+                edge.updatePositions()
 
     def remove(self):
         if DEBUG: print("> Removing Node", self)
         if DEBUG: print(" - remove all edges from sockets")
         for socket in (self.inputs+self.outputs):
-            if socket.hasEdge():
-                if DEBUG: print("    - removing from socket:", socket, "edge:", socket.edge)
-                socket.edge.remove()
+            for edge in socket.edges:
+                if DEBUG: print("    - removing from socket:", socket, "edges:", edge)
+                edge.remove()
         if DEBUG: print(" - remove grNode")
         self.scene.graphicsScene.removeItem(self.grNode)
         self.grNode = None
