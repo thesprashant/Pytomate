@@ -5,10 +5,18 @@ from pytomate_graphics_node import OurGraphicsNode
 
 
 class MdiGraphicsNode(OurGraphicsNode):
-    pass
+    def initSizes(self):
+        super().initSizes()
+        self.width = 180
+        self.height = 80
+        self.edge_size = 8
+        self._padding = 8
+
 
 class MdiContent(OurNodeContentWidget):
-    pass
+    def initUI(self):
+        lbl = QLabel(self.node.content_label, self)
+        lbl.setObjectName(self.node.content_label_objname)
 
 
 class MdiNode(Node):
@@ -22,5 +30,5 @@ class MdiNode(Node):
         super().__init__(scene, self.__class__.op_title, inputs, outputs)
 
     def initInnerClasses(self):
-        self.content = MdiContent()
+        self.content = MdiContent(self)
         self.grNode = MdiGraphicsNode(self)

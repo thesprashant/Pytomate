@@ -59,7 +59,7 @@ class PytomateSubWindow(PytomateWidget):
             try:
                 element = get_class_from_opcode(op_code)(self.Scene)
                 element.setPos(scene_position.x(), scene_position.y())
-                self.Scene.history.storeHistory("Created node %s" % node.__class__.__name__)
+                self.Scene.history.storeHistory("Created node %s" % element.__class__.__name__)
             except Exception as e: dumpException(e)
 
 

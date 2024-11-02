@@ -5,8 +5,9 @@ from PyQt5.QtWidgets import *
 
 
 class OurNodeContentWidget(QWidget, Serializable):
-    def __init__(self, parent=None):
+    def __init__(self, node, parent=None):
         super().__init__(parent)
+        self.node = node
 
         self.initUI()
 
