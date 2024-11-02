@@ -13,27 +13,53 @@ class Node(Serializable):
         self._title = title
         self.scene = scene
 
-        self.content = OurNodeContentWidget()
-        self.grNode = OurGraphicsNode(self)
+        self.initInnerClasses()
+        self.initSettings()
+
         self.title = title
 
         self.scene.addNode(self)
         self.scene.graphicsScene.addItem(self.grNode)
 
-        self.socket_spacing = 22
 
         # create socket for inputs and outputs
         self.inputs = []
         self.outputs = []
+        self.initSockets(inputs, outputs)
+
+    def initInnerClasses(self):
+        self.content = OurNodeContentWidget()
+        self.grNode = OurGraphicsNode(self)
+
+    def initSettings(self):
+        self.socket_spacing = 22
+
+        self.input_socket_position = LEFT_BOTTOM
+        self.output_socket_position = RIGHT_TOP
+        self.input_multi_edged = False
+        self.output_multi_edged = True
+
+    def initSockets(self, inputs, outputs, reset=True):
+        """ Create sockets for inputs and outputs"""
+
+        if reset:
+            # clear old sockets
+            if hasattr(self, 'inputs') and hasattr(self, 'outputs'):
+                # remove grSockets from scene
+                for socket in (self.inputs + self.outputs):
+                    self.scene.graphicsScene.removeItem(socket.grSocket)
+                self.inputs = []
+                self.outputs = []
+
         counter = 0
         for item in inputs:
-            socket = Socket(node=self, index=counter, position=LEFT_BOTTOM)
+            socket = Socket(node=self, index=counter, position=self.input_socket_position, socket_type=item, multi_edges=self.input_multi_edged)
             counter += 1
             self.inputs.append(socket)
 
         counter = 0
         for item in outputs:
-            socket = Socket(node=self, index=counter, position=RIGHT_TOP)
+            socket = Socket(node=self, index=counter, position=self.output_socket_position, socket_type=item, multi_edges=self.output_multi_edged)
             counter += 1
             self.outputs.append(socket)
 

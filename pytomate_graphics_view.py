@@ -105,6 +105,7 @@ class OurQGraphicsView(QGraphicsView):
         fakeEvent = QMouseEvent(event.type(), event.localPos(), event.screenPos(),
                                 Qt.LeftButton, event.buttons() & -Qt.LeftButton, event.modifiers())
         super().mousePressEvent(fakeEvent)
+        self.setDragMode(QGraphicsView.NoDrag)
         self.setDragMode(QGraphicsView.RubberBandDrag)
 
     def leftMouseButtonPress(self, event):
@@ -193,7 +194,6 @@ class OurQGraphicsView(QGraphicsView):
             # otherwise deselect everything
         if item is None:
             self.grScene.itemsDeselected.emit()
-
             self.rubberBandDraggingRectangle = False
         super().mouseReleaseEvent(event)
 

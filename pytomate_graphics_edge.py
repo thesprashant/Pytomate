@@ -39,12 +39,12 @@ class OurGraphicsEdge(QGraphicsPathItem):
         self._pen_dragging.setWidthF(2.0)
 
     def onSelected(self):
-        self.edge.Scene.graphicsScene.itemSelected.emit()
+        self.edge.scene.graphicsScene.itemSelected.emit()
 
     def mouseReleaseEvent(self,event):
         super().mouseReleaseEvent(event)
         if self._last_selected_state != self.isSelected():
-            self.edge.Scene.resetLastSelectedStates()
+            self.edge.scene.resetLastSelectedStates()
             self._last_selected_state = self.isSelected()
             self.onSelected()
 
