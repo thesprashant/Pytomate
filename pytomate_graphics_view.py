@@ -93,6 +93,19 @@ class OurQGraphicsView(QGraphicsView):
             super().mouseReleaseEvent(event)
 
     def middleMouseButtonPress(self, event):
+        item = self.getItemAtClick(event)
+        if DEBUG:
+            if isinstance(item, OurGraphicsEdge): print('RMB DEBUG:', item.edge, ' connecting sockets:',
+                                            item.edge.start_socket, '<-->', item.edge.end_socket)
+            if type(item) is OurGraphicsSocket: print('RMB DEBUG:', item.socket, 'has edges:', item.socket.edges)
+
+            if item is None:
+                print('SCENE:')
+                print('  Nodes:')
+                for node in self.graphicsScene.scene.nodes: print('    ', node)
+                print('  Edges:')
+                for edge in self.graphicsScene.scene.edges: print('    ', edge)
+
         releaseEvent = QMouseEvent(QEvent.MouseButtonRelease, event.localPos(), event.screenPos(),
                                    Qt.LeftButton, Qt.NoButton, event.modifiers())
         super().mouseReleaseEvent(releaseEvent)
@@ -142,21 +155,6 @@ class OurQGraphicsView(QGraphicsView):
 
     def rightMouseButtonPress(self, event):
         super().mousePressEvent(event)
-
-        item = self.getItemAtClick(event)
-
-        if DEBUG:
-            if isinstance(item, OurGraphicsEdge): print('RMB DEBUG:', item.edge, ' connecting sockets:',
-                                            item.edge.start_socket, '<-->', item.edge.end_socket)
-            if type(item) is OurGraphicsSocket: print('RMB DEBUG:', item.socket, 'has edges:', item.socket.edges)
-
-            if item is None:
-                print('SCENE:')
-                print('  Nodes:')
-                for node in self.graphicsScene.scene.nodes: print('    ', node)
-                print('  Edges:')
-                for edge in self.graphicsScene.scene.edges: print('    ', edge)
-
 
     def leftMouseButtonRelease(self, event):
         return super().mouseReleaseEvent(event)

@@ -92,16 +92,23 @@ class Scene(Serializable):
         self._items_deselected_listeners.append(callback)
 
     def addDragEnterListener(self, callback):
-        self.graphicsScene.views()[0].addDragEnterListener(callback)
+        self.getView().addDragEnterListener(callback)
 
     def addDropListener(self, callback):
-        self.graphicsScene.views()[0].addDropListener(callback)
+        self.getView().addDropListener(callback)
 
     def resetLastSelectedStates(self):
         for node in self.nodes:
             node.grNode._last_selected_state = False
         for edge in self.edges:
             edge.grEdge._last_selected_state = False
+
+    def getView(self):
+        return self.graphicsScene.views()[0]
+
+    def getItemAt(self, pos):
+        return self.getView().itemAt(pos)
+
 
     def addNode(self, node):
         self.nodes.append(node)

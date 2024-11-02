@@ -169,7 +169,8 @@ class PytomateWindow(QMainWindow):
 
     def onEditDelete(self):
         if self.getCurrentNodeEditorWidget():
-            self.getCurrentNodeEditorWidget().Scene.graphicsScene.views()[0].deleteSelected(self)
+            self.getCurrentNodeEditorWidget().Scene.getView().deleteSelected(self)
+
 
 
     def onEditCut(self):

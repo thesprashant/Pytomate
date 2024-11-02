@@ -23,6 +23,10 @@ class OurNodeContentWidget(QWidget, Serializable):
         self.text.setPlaceholderText("Enter Note: ")
         self.layout.addWidget(self.text)
 
+    def setEditingFlag(self, value):
+        self.node.Scene.getView().editingFlag = value
+
+
     def serialize(self):
         return OrderedDict([
 
