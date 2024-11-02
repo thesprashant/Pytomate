@@ -87,7 +87,7 @@ class PytomateWindow(QMainWindow):
             event.ignore()
 
     def isModified(self):
-        return self.getCurrentNodeEditorWidget().scene.isModified()
+        return self.getCurrentNodeEditorWidget().Scene.isModified()
 
 
     def getCurrentNodeEditorWidget(self):

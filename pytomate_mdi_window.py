@@ -6,6 +6,10 @@ from pytomate_window import PytomateWindow
 from pytomate_sub_window import PytomateSubWindow
 from pytomate_utils import dumpException, pp
 from pytomate_draglist import OurDragListBox
+from pytomate_conf import *
+from pytomate_elements import *
+
+DEBUG = False
 
 class PytomateMdiWindow(PytomateWindow):
 
@@ -15,6 +19,9 @@ class PytomateMdiWindow(PytomateWindow):
 
         self.empty_icon = QIcon(".")
 
+        if DEBUG:
+            print("Registered elements:")
+            pp(TOOL_NODES)
 
         self.mdiArea = QMdiArea()
         self.mdiArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)

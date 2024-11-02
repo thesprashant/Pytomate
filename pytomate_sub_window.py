@@ -3,7 +3,12 @@ from PyQt5.QtCore import *
 from pytomate_conf import *
 from pytomate_widget import PytomateWidget
 from pytomate_node import Node
+from pytomate_tool_base import *
+from pytomate_conf import *
+from pytomate_utils import dumpException
 
+
+DEBUG = False
 
 class PytomateSubWindow(PytomateWidget):
     def __init__(self):
@@ -31,8 +36,6 @@ class PytomateSubWindow(PytomateWidget):
         for callback in self._close_event_listeners: callback(self, event)
 
     def onDragEnter(self, event):
-        # print("CalcSubWnd :: ~onDragEnter")
-        # print("text: '%s'" % event.mimeData().text())
         if event.mimeData().hasFormat(LISTBOX_MIMETYPE):
             event.acceptProposedAction()
         else:
@@ -40,8 +43,6 @@ class PytomateSubWindow(PytomateWidget):
             event.setAccepted(False)
 
     def onDrop(self, event):
-        # print("CalcSubWnd :: ~onDrop")
-        # print("text: '%s'" % event.mimeData().text())
         if event.mimeData().hasFormat(LISTBOX_MIMETYPE):
             eventData = event.mimeData().data(LISTBOX_MIMETYPE)
             dataStream = QDataStream(eventData, QIODevice.ReadOnly)
@@ -53,11 +54,14 @@ class PytomateSubWindow(PytomateWidget):
             mouse_position = event.pos()
             scene_position = self.Scene.graphicsScene.views()[0].mapToScene(mouse_position)
 
-            print("GOT DROP: [%d] '%s'" % (op_code, text), "mouse:", mouse_position, "scene:", scene_position)
+            if DEBUG: print("GOT DROP: [%d] '%s'" % (op_code, text), "mouse:", mouse_position, "scene:", scene_position)
 
+            try:
+                element = get_class_from_opcode(op_code)(self.Scene)
+                element.setPos(scene_position.x(), scene_position.y())
+                self.Scene.history.storeHistory("Created node %s" % node.__class__.__name__)
+            except Exception as e: dumpException(e)
 
-            node = Node(self.Scene, text, inputs=[1,1], outputs=[2])
-            node.setPos(scene_position.x(), scene_position.y())
 
 
             event.setDropAction(Qt.MoveAction)
