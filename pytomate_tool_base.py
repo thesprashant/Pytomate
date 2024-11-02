@@ -7,8 +7,8 @@ from pytomate_graphics_node import OurGraphicsNode
 class MdiGraphicsNode(OurGraphicsNode):
     def initSizes(self):
         super().initSizes()
-        self.width = 180
-        self.height = 80
+        self.width = 150
+        self.height = 200
         self.edge_size = 8
         self._padding = 8
 
@@ -32,3 +32,13 @@ class MdiNode(Node):
     def initInnerClasses(self):
         self.content = MdiContent(self)
         self.grNode = MdiGraphicsNode(self)
+
+    def serialize(self):
+        res = super().serialize()
+        res['op_code'] = self.__class__.op_code
+        return res
+
+    def deserialize(self, data, hashmap={}, restore_id=True):
+        res = super().deserialize(data, hashmap, restore_id)
+        print("Deserialized CalcNode '%s'" % self.__class__.__name__, "res:", res)
+        return res

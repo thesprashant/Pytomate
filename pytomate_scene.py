@@ -30,6 +30,9 @@ class Scene(Serializable):
         self._item_selected_listeners = []
         self._items_deselected_listeners = []
 
+        self.node_class_selector = None
+
+
         self.initui()
         self.history = SceneHistory(self)
         self.clipboard = SceneClipboard(self)
@@ -138,6 +141,13 @@ class Scene(Serializable):
             except Exception as e:
                 dumpException(e)
 
+    def setNodeClassSelector(self, class_selecting_function):
+        self.node_class_selector = class_selecting_function
+
+    def getNodeClassFromData(self, data):
+        return Node if self.node_class_selector is None else self.node_class_selector(data)
+
+
     def serialize(self):
         nodes, edges = [], []
         for node in self.nodes: nodes.append(node.serialize())
@@ -160,7 +170,7 @@ class Scene(Serializable):
 
         # create nodes
         for node_data in data['nodes']:
-            Node(self).deserialize(node_data, hashmap, restore_id)
+            self.getNodeClassFromData(node_data)(self).deserialize(node_data, hashmap, restore_id)
 
 
         # create edges

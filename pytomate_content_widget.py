@@ -29,5 +29,6 @@ class OurNodeContentWidget(QWidget, Serializable):
         ])
 
     def deserialize(self, data, hashmap={}):
-        return False
+        return True
+
 

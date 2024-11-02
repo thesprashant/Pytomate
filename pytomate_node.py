@@ -28,7 +28,7 @@ class Node(Serializable):
         self.initSockets(inputs, outputs)
 
     def initInnerClasses(self):
-        self.content = OurNodeContentWidget()
+        self.content = OurNodeContentWidget(self)
         self.grNode = OurGraphicsNode(self)
 
     def initSettings(self):
@@ -158,5 +158,6 @@ class Node(Serializable):
                 self.outputs.append(new_socket)
         except Exception as e: dumpException(e)
 
+        res = self.content.deserialize(data['content'], hashmap)
 
-        return True
+        return True & res

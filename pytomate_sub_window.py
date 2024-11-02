@@ -22,8 +22,14 @@ class PytomateSubWindow(PytomateWidget):
 
         self.Scene.addDragEnterListener(self.onDragEnter)
         self.Scene.addDropListener(self.onDrop)
+        self.Scene.setNodeClassSelector(self.getNodeClassFromData)
+
 
         self._close_event_listeners = []
+
+    def getNodeClassFromData(self, data):
+        if 'op_code' not in data: return Node
+        return get_class_from_opcode(data['op_code'])
 
 
     def setTitle(self):
