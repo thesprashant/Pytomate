@@ -13,6 +13,8 @@ class PytomateSubWindow(PytomateWidget):
         self.setTitle()
 
         self.Scene.addHasBeenModifiedListener(self.setTitle)
+        self._close_event_listeners = []
+
         self.Scene.addDragEnterListener(self.onDragEnter)
         self.Scene.addDropListener(self.onDrop)
 

@@ -13,6 +13,9 @@ class PytomateMdiWindow(PytomateWindow):
         self.name_company = 'Pytomate'
         self.name_product = 'Pytomate'
 
+        self.empty_icon = QIcon(".")
+
+
         self.mdiArea = QMdiArea()
         self.mdiArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.mdiArea.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
@@ -140,21 +143,20 @@ class PytomateMdiWindow(PytomateWindow):
         self.updateEditMenu()
 
     def updateEditMenu(self):
-        #print("update Edit Menu")
-        active = self.getCurrentNodeEditorWidget()
-        hasMdiChild = (active is not None)
+        try:
+            print("update Edit Menu")
+            active = self.getCurrentNodeEditorWidget()
+            hasMdiChild = (active is not None)
 
-        self.actPaste.setEnabled(hasMdiChild)
+            self.actPaste.setEnabled(hasMdiChild)
 
-        self.actCut.setEnabled(hasMdiChild and active.hasSelectedItems())
-        self.actCopy.setEnabled(hasMdiChild and active.hasSelectedItems())
-        self.actDelete.setEnabled(hasMdiChild and active.hasSelectedItems())
+            self.actCut.setEnabled(hasMdiChild and active.hasSelectedItems())
+            self.actCopy.setEnabled(hasMdiChild and active.hasSelectedItems())
+            self.actDelete.setEnabled(hasMdiChild and active.hasSelectedItems())
 
-        self.actUndo.setEnabled(hasMdiChild and active.canUndo())
-        self.actRedo.setEnabled(hasMdiChild and active.canRedo())
-
-
-
+            self.actUndo.setEnabled(hasMdiChild and active.canUndo())
+            self.actRedo.setEnabled(hasMdiChild and active.canRedo())
+        except Exception as e: dumpException(e)
 
     def updateWindowMenu(self):
         self.windowMenu.clear()
@@ -217,10 +219,23 @@ class PytomateMdiWindow(PytomateWindow):
     def createStatusBar(self):
         self.statusBar().showMessage("Ready")
 
-    def createMdiChild(self):
-        pytomate = PytomateSubWindow()
+    def createMdiChild(self, child_widget=None):
+        pytomate = child_widget if child_widget is not None else PytomateSubWindow()
         subwnd = self.mdiArea.addSubWindow(pytomate)
+        subwnd.setWindowIcon(self.empty_icon)
+        pytomate.Scene.history.addHistoryModifiedListener(self.updateEditMenu)
+        pytomate.addCloseEventListener(self.onSubWndClose)
         return subwnd
+
+    def onSubWndClose(self, widget, event):
+        existing = self.findMdiChild(widget.filename)
+        self.mdiArea.setActiveSubWindow(existing)
+
+        if self.maybeSave():
+            event.accept()
+        else:
+            event.ignore()
+
 
     def findMdiChild(self, filename):
         for window in self.mdiArea.subWindowList():
