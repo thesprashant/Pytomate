@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import *
 from pytomate_node import Node
 from pytomate_content_widget import OurNodeContentWidget
 from pytomate_graphics_node import OurGraphicsNode
-
+from pytomate_utils import dumpException
 
 class MdiGraphicsNode(OurGraphicsNode):
     def initSizes(self):
@@ -32,6 +32,16 @@ class MdiNode(Node):
     def initInnerClasses(self):
         self.content = MdiContent(self)
         self.grNode = MdiGraphicsNode(self)
+
+    def evalImplementation(self):
+        return 123
+
+    def eval(self):
+        try
+            return self.evalImplementation()
+        except Exception as e:
+            dumpException(e)
+
 
     def serialize(self):
         res = super().serialize()

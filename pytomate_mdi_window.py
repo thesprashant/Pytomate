@@ -7,7 +7,6 @@ from pytomate_sub_window import PytomateSubWindow
 from pytomate_utils import dumpException, pp
 from pytomate_draglist import OurDragListBox
 from pytomate_conf import *
-from pytomate_elements import *
 
 DEBUG = False
 

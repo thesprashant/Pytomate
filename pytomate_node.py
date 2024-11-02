@@ -117,6 +117,9 @@ class Node(Serializable):
         self.scene.removeNode(self)
         if DEBUG: print(" - everything was done.")
 
+    def eval(self):
+        pass
+
 
     def serialize(self):
         inputs, outputs = [], []
