@@ -24,11 +24,37 @@ class Scene(Serializable):
         self.scene_height = 70000
 
         self._has_been_modified = False
+        self._last_selected_items = []
+
         self._has_been_modified_listeners = []
+        self._item_selected_listeners = []
+        self._items_deselected_listeners = []
 
         self.initui()
         self.history = SceneHistory(self)
         self.clipboard = SceneClipboard(self)
+
+        self.graphicsScene.itemSelected.connect(self.onItemSelected)
+        self.graphicsScene.itemDeselected.connect(self.onItemsDeselected)
+
+    def initui(self):
+        self.graphicsScene = OurQGraphicsScene(self)
+        self.graphicsScene.setgraphicsScene(self.scene_width, self.scene_height)
+
+    def onItemSelected(self):
+        current_selected_items = self.getSelectedItems()
+        if current_selected_items != self._last_selected_items:
+            self._last_selected_items = current_selected_items
+            self.history.storeHistory("Selection Changed")
+            for callback in self._item_selected_listeners: callback()
+
+
+    def onItemsDeselected(self):
+        self.resetLastSelectedStates()
+        if self._last_selected_items != []:
+            self._last_selected_items = []
+            self.history.storeHistory("Deselected Everything")
+            for callback in self._items_deselected_listeners: callback()
 
     def isModified(self):
         return self.has_been_modified
@@ -47,8 +73,8 @@ class Scene(Serializable):
             self._has_been_modified = value
 
             # call all registered listeners
-            for callback in self._has_been_modified_listeners:
-                callback()
+            for callback in self._has_been_modified_listeners: callback()
+
 
         self._has_been_modified = value
 
@@ -56,17 +82,24 @@ class Scene(Serializable):
     def addHasBeenModifiedListener(self, callback):
         self._has_been_modified_listeners.append(callback)
 
+    def itemSelectedListener(self, callback):
+        self._item_selected_listeners.append(callback)
+
+    def itemDeselectedListener(self, callback):
+        self._items_deselected_listeners.append(callback)
+
     def addDragEnterListener(self, callback):
         self.graphicsScene.views()[0].addDragEnterListener(callback)
 
     def addDropListener(self, callback):
         self.graphicsScene.views()[0].addDropListener(callback)
 
+    def resetLastSelectedStates(self):
+        for node in self.nodes:
+            node.grNode._last_selected_state = False
+        for edge in self.edges:
+            edge.grEdge._last_selected_state = False
 
-
-    def initui(self):
-        self.graphicsScene = OurQGraphicsScene(self)
-        self.graphicsScene.setgraphicsScene(self.scene_width, self.scene_height)
     def addNode(self, node):
         self.nodes.append(node)
 

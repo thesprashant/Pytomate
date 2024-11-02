@@ -4,6 +4,9 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
 class OurQGraphicsScene(QGraphicsScene):
+    itemSelected = pyqtSignal()
+    itemDeselected = pyqtSignal()
+
     def __init__(self, scene,  parent=None):
         super().__init__(parent)
 

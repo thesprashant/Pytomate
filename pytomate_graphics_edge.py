@@ -14,7 +14,20 @@ class OurGraphicsEdge(QGraphicsPathItem):
         super().__init__(parent)
 
         self.edge = edge
+        self._last_selected_state = False
 
+        self.initAssets()
+        self.initUI()
+
+        self.posSource = [0, 0]
+        self.posDestination = [200, 100]
+
+    def initUI(self):
+        self.setFlag(QGraphicsItem.ItemIsSelectable)
+        self.setZValue(-1)
+
+
+    def initAssets(self):
         self._color = QColor("#001000")
         self._color_selected = QColor("#00ff00")
         self._pen = QPen(self._color)
@@ -25,13 +38,16 @@ class OurGraphicsEdge(QGraphicsPathItem):
         self._pen_selected.setWidthF(2.0)
         self._pen_dragging.setWidthF(2.0)
 
+    def onSelected(self):
+        self.edge.Scene.graphicsScene.itemSelected.emit()
 
-        self.setFlag(QGraphicsItem.ItemIsSelectable)
+    def mouseReleaseEvent(self,event):
+        super().mouseReleaseEvent(event)
+        if self._last_selected_state != self.isSelected():
+            self.edge.Scene.resetLastSelectedStates()
+            self._last_selected_state = self.isSelected()
+            self.onSelected()
 
-        self.setZValue(-1)
-
-        self.posSource = [0, 0]
-        self.posDestination = [200, 100]
     def setSource(self, x, y):
         self.posSource = [x, y]
 
