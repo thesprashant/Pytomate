@@ -37,7 +37,7 @@ class MdiNode(Node):
         return 123
 
     def eval(self):
-        try
+        try:
             return self.evalImplementation()
         except Exception as e:
             dumpException(e)
