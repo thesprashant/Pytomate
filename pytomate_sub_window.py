@@ -56,7 +56,6 @@ class PytomateSubWindow(PytomateWidget):
 
             node = Node(self.Scene, text, inputs=[1,1], outputs=[2])
             node.setPos(scene_position.x(), scene_position.y())
-            self.Scene.addNode(node)
 
 
             event.setDropAction(Qt.MoveAction)

@@ -23,6 +23,7 @@ class OurDragListBox(QListWidget):
         self.addMyItem("Output", "icons/out.png", OP_NODE_OUTPUT)
         self.addMyItem("Exec", "icons/exec.png", OP_NODE_EXEC)
         self.addMyItem("Result", "icons/result.png", OP_NODE_RESULT)
+        self.addMyItem("Note", "icons/note.png", OP_NODE_NOTE)
 
     def addMyItem(self, name, icon=None, op_code=0):
         item = QListWidgetItem(name, self)  # can be (icon, text, parent, <int>type)

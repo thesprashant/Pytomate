@@ -274,11 +274,11 @@ class OurQGraphicsView(QGraphicsView):
             self.graphicsScene.scene.history.undo()
         elif event.key() == Qt.Key_Z and event.modifiers() & Qt.ControlModifier and event.modifiers() & Qt.ShiftModifier:
             self.graphicsScene.scene.history.redo()
-        elif event.key() == Qt.Key_H:
-            ix = 0
-            for item in self.graphicsScene.scene.history.history_stack:
-                print("#", ix, "--", item['desc'])
-                ix += 1
+        # elif event.key() == Qt.Key_H:
+        #     ix = 0
+        #     for item in self.graphicsScene.scene.history.history_stack:
+        #         print("#", ix, "--", item['desc'])
+        #         ix += 1
         else:
             super().keyPressEvent(event)
 
