@@ -1,3 +1,5 @@
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from pytomate_node import Node
 from pytomate_content_widget import OurNodeContentWidget
@@ -11,6 +13,23 @@ class MdiGraphicsNode(OurGraphicsNode):
         self.height = 200
         self.edge_size = 8
         self._padding = 8
+
+    def initAssets(self):
+        super().initAssets()
+        self.icons = QImage("icons/status_icons.png")
+
+    def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
+        super().paint(painter, QStyleOptionGraphicsItem, widget)
+
+        offset = 24.0
+        if self.node.isDirty(): offset = 0.0
+        if self.node.isInvalid(): offset = 48.0
+
+        painter.drawImage(
+            QRectF(-10, -10, 24.0, 24.0),
+            self.icons,
+            QRectF(offset, 0, 24.0, 24.0)
+        )
 
 
 class MdiContent(OurNodeContentWidget):
