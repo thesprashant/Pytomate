@@ -58,7 +58,7 @@ class ToolNode_Check(MdiNode):
             return
         val = input_node.eval()
         self.value = val
-        if self.content.check.isChecked():
+        if self.content.check.isChecked() == True:
             self.markInvalid(False)
             self.markDirty(False)
             self.evalChildren()

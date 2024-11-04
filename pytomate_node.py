@@ -169,6 +169,9 @@ class Node(Serializable):
             other_node.markInvalid(new_value)
             other_node.markChildrenInvalid(new_value)
 
+    def evalImplementation(self):
+        return 123
+
     def eval(self):
         self.markDirty(False)
         self.markInvalid(False)
@@ -176,7 +179,7 @@ class Node(Serializable):
 
     def evalChildren(self):
         for node in self.getChildrenNodes():
-            node.eval()
+            node.evalImplementation()
 
     # traversing nodes functions
 

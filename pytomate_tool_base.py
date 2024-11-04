@@ -82,7 +82,7 @@ class MdiNode(Node):
 
     def onChecked(self):
         print("%s::__onChecked" % self.__class__.__name__)
-        self.eval()
+        self.evalImplementation()
 
 
     def serialize(self):
