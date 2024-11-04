@@ -5,6 +5,7 @@ from pytomate_utils import dumpException
 
 class check_content(OurNodeContentWidget):
     def initUI(self):
+        self.value = None
         self.layout = QVBoxLayout()
         self.layout.setContentsMargins(0,0,0,0)
         self.setLayout(self.layout)
@@ -48,3 +49,19 @@ class ToolNode_Check(MdiNode):
     def initInnerClasses(self):
         self.content = check_content(self)
         self.grNode = check_graphics(self)
+        self.content.check.stateChanged.connect(self.onChecked)
+
+    def evalImplementation(self):
+        input_node = self.getInput(2)
+        if not input_node:
+            self.markInvalid()
+            return
+        val = input_node.eval()
+        self.value = val
+        if self.content.check.isChecked():
+            self.markInvalid(False)
+            self.markDirty(False)
+            self.evalChildren()
+            return self.value
+        return None
+

@@ -7,6 +7,9 @@ from PyQt5.QtWidgets import *
 from pytomate_graphics_socket import OurGraphicsSocket
 from pytomate_graphics_edge import OurGraphicsEdge
 from pytomate_edge import Edge, EDGE_TYPE_BEZIER
+from pytomate_utils import dumpException
+
+
 
 
 
@@ -222,31 +225,44 @@ class OurQGraphicsView(QGraphicsView):
 
 
     def edgeDragStart(self, item):
-        if DEBUG: print('View::edgeDragStart ~   assign Start Socket to:', item.socket)
-        self.drag_start_socket = item.socket
-        self.drag_edge = Edge(self.graphicsScene.scene, item.socket, None, EDGE_TYPE_BEZIER)
-        if DEBUG: print('View::edgeDragStart ~   dragEdge:', self.drag_edge)
-
-
+        try:
+            if DEBUG: print('View::edgeDragStart ~ Start dragging edge')
+            if DEBUG: print('View::edgeDragStart ~   assign Start Socket to:', item.socket)
+            self.drag_start_socket = item.socket
+            self.drag_edge = Edge(self.graphicsScene.scene, item.socket, None, EDGE_TYPE_BEZIER)
+            if DEBUG: print('View::edgeDragStart ~   dragEdge:', self.drag_edge)
+        except Exception as e: dumpException(e)
 
     def edgeDragEnd(self, item):
-        """ return True if skip the rest of the code """
         self.mode = MODE_NOOP
 
         if DEBUG: print('View::edgeDragEnd ~ End dragging edge')
         self.drag_edge.remove()
         self.drag_edge = None
 
+        try:
+            if type(item) is OurGraphicsSocket:
+                if item.socket != self.drag_start_socket:
 
-        if type(item) is OurGraphicsSocket:
-            if item.socket != self.drag_start_socket:
-                for edge in item.socket.edges:
-                    edge.remove()
+                    if not item.socket.is_multi_edges:
+                        item.socket.removeAllEdges()
 
-                new_edge = Edge(self.graphicsScene.scene, self.drag_start_socket, item.socket, edge_type=EDGE_TYPE_BEZIER)
-                if DEBUG: print("View::edgeDragEnd ~  created new edge: ", new_edge, "connecting", new_edge.start_socket, " <--> ", new_edge)
+                    if not self.drag_start_socket.is_multi_edges:
+                        self.drag_start_socket.removeAllEdges()
+
+                    new_edge = Edge(self.graphicsScene.scene, self.drag_start_socket, item.socket,
+                                    edge_type=EDGE_TYPE_BEZIER)
+                    if DEBUG: print("View::edgeDragEnd ~  created new edge:", new_edge, "connecting",
+                                    new_edge.start_socket, "<-->", new_edge.end_socket)
+
+                    for socket in [self.drag_start_socket, item.socket]:
+                        socket.node.onEdgeConnectionChanged(new_edge)
+                        if socket.is_input: socket.node.onInputChanged(new_edge)
+
                 self.graphicsScene.scene.history.storeHistory("Created new edge by dragging", setModified=True)
                 return True
+
+        except Exception as e: dumpException(e)
 
         if DEBUG: print('View::edgeDragEnd ~ everything done.')
         return False

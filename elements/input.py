@@ -10,7 +10,7 @@ class input_content(OurNodeContentWidget):
         self.layout.setContentsMargins(0,0,0,0)
         self.setLayout(self.layout)
 
-        self.edit = QTextEdit("", self)
+        self.edit = MyTextEdit()
         self.edit.setPlaceholderText("Enter Input: ")
         self.edit.setAlignment(Qt.AlignLeft)
         self.layout.addWidget(self.edit)
@@ -38,6 +38,16 @@ class input_graphics(MdiGraphicsNode):
         self.edge_size = 8
         self._padding = 8
 
+class MyTextEdit(QTextEdit):
+    plainTextChanged = pyqtSignal(str)
+
+    def __init__(self):
+        super().__init__()
+        self.textChanged.connect(self.emitPlainTextChanged)
+
+    def emitPlainTextChanged(self):
+        self.plainTextChanged.emit(self.toPlainText())
+
 @register_node(OP_NODE_INPUT)
 class ToolNode_Input(MdiNode):
     icon = "icons/in.png"
@@ -47,7 +57,23 @@ class ToolNode_Input(MdiNode):
 
     def __init__(self, scene):
         super().__init__(scene, inputs=[], outputs=[3])
+        self.eval()
 
     def initInnerClasses(self):
         self.content = input_content(self)
         self.grNode = input_graphics(self)
+        self.content.edit.plainTextChanged.connect(self.onInputChanged)
+
+
+    def handleTextChanged(self):
+        self.content.edit.emit(self.toPlainText())
+        self.onInputChanged()
+
+    def evalImplementation(self):
+        self.value = self.content.edit.toPlainText()
+        self.markDirty(False)
+        self.markInvalid(False)
+        self.markDescendantsInvalid(False)
+        self.markDescendantsDirty()
+        self.evalChildren()
+        return self.value

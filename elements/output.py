@@ -1,11 +1,11 @@
 from pytomate_conf import *
-from PyQt5.QtCore import *
 from pytomate_tool_base import *
 from pytomate_content_widget import OurNodeContentWidget
 from pytomate_utils import dumpException
 
 class output_content(OurNodeContentWidget):
     def initUI(self):
+        self.value = None
         self.layout = QVBoxLayout()
         self.layout.setContentsMargins(0,0,0,0)
         self.setLayout(self.layout)
@@ -51,3 +51,29 @@ class ToolNode_Output(MdiNode):
     def initInnerClasses(self):
         self.content = output_content(self)
         self.grNode = output_graphics(self)
+
+    def eval(self):
+        try:
+
+            val = self.evalImplementation()
+            print("eval executed")
+            return val
+
+        except Exception as e:
+            self.markInvalid()
+            dumpException(e)
+
+    def evalImplementation(self):
+        input_node = self.getInput(0)
+        if not input_node:
+            self.markInvalid()
+            return
+        val = input_node.eval()
+        self.value = val
+        if not val:
+            self.markInvalid()
+            return
+        self.content.edit.setText(val)
+        self.markInvalid(False)
+        self.markDirty(False)
+        return val

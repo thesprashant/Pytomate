@@ -44,3 +44,16 @@ class ToolNode_Result(MdiNode):
     def initInnerClasses(self):
         self.content = result_content(self)
         self.grNode = MdiGraphicsNode(self)
+
+    def evalImplementation(self):
+        input_node = self.getInput(2)
+        if not input_node:
+            self.markInvalid()
+            return
+        val = input_node.eval()
+        self.content.edit.setText(val)
+        self.value = val
+        self.markInvalid(False)
+        self.markDirty(False)
+        self.evalChildren()
+        return self.value

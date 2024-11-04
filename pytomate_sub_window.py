@@ -167,8 +167,8 @@ class PytomateSubWindow(PytomateWidget):
         action = context_menu.exec_(self.mapToGlobal(event.pos()))
 
         if action is not None:
-            new_calc_node = get_class_from_opcode(action.data())(self.scene)
-            scene_pos = self.scene.getView().mapToScene(event.pos())
+            new_calc_node = get_class_from_opcode(action.data())(self.Scene)
+            scene_pos = self.Scene.getView().mapToScene(event.pos())
             new_calc_node.setPos(scene_pos.x(), scene_pos.y())
             print("Selected node:", new_calc_node)
 

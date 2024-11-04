@@ -12,7 +12,7 @@ RIGHT_BOTTOM = 4
 DEBUG = False
 
 class Socket(Serializable):
-    def __init__(self, node, index=0, position=LEFT_TOP, socket_type=1, multi_edges=True):
+    def __init__(self, node, index=0, position=LEFT_TOP, socket_type=1, multi_edges=True, is_input=False):
         super().__init__()
 
         self.node = node
@@ -20,6 +20,9 @@ class Socket(Serializable):
         self.position = position
         self.socket_type = socket_type
         self.is_multi_edges = multi_edges
+        self.is_input = is_input
+        self.is_output = not self.is_input
+
 
         if DEBUG: print("Socket -- creating with", self.index, self.position, "for node", self.node)
 

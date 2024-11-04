@@ -1,3 +1,5 @@
+import io
+import contextlib
 from PyQt5.QtGui import QFont
 from pytomate_conf import *
 from pytomate_tool_base import *
@@ -34,3 +36,26 @@ class ToolNode_Exec(MdiNode):
     def initInnerClasses(self):
         self.content = exec_content(self)
         self.grNode = exec_graphics(self)
+
+    def execute_code(self, code: str) -> str:
+        # Create a StringIO object to capture the output
+        output = io.StringIO()
+
+        # Redirect stdout to the StringIO object
+        with contextlib.redirect_stdout(output):
+            exec(code)  # Execute the code provided as a string
+
+        # Get the captured output
+        return output.getvalue()
+
+    def evalImplementation(self):
+        input_node = self.getInput(2)
+        if not input_node:
+            self.markInvalid()
+            return
+        val = input_node.eval()
+        self.value = self.execute_code(val)
+        self.markInvalid(False)
+        self.markDirty(False)
+        self.evalChildren()
+        return self.value
