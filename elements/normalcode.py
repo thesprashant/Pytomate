@@ -37,14 +37,19 @@ class code_content(OurNodeContentWidget):
 
 
 class code_graphics(OurGraphicsNode):
-    pass
+    def initSizes(self):
+        super().initSizes()
+        self.width = 300
+        self.height = 180
+        self.edge_size = 8
+        self._padding = 8
 
-@register_node(OP_NODE_CODE)
-class ToolNode_Code(MdiNode):
+@register_node(OP_NODE_CODENORM)
+class ToolNode_CodeNorm(MdiNode):
     icon = "icons/code.png"
-    op_code = OP_NODE_CODE
-    op_title = "Code with input"
-    content_label_objname = "tool_node_co"
+    op_code = OP_NODE_CODENORM
+    op_title = "Normal Code"
+    content_label_objname = "tool_node_cod"
 
 
     def __init__(self, scene):
@@ -61,27 +66,9 @@ class ToolNode_Code(MdiNode):
             self.markInvalid()
             return
         val = input_node.eval()
-
-        print("code from input edge is: ")
-        pattern = r'inputtocode = .*?(\n|$)'
-        if "inputtocode = " in old_val:
-            cleaned_val = re.sub(pattern, '', old_val)
-            print("cleaned old value is: ",cleaned_val)
-            val = val.rstrip('\n')
-            new_val = "inputtocode = \'" + val + "\'"
-            new_val = new_val.rstrip('\n')
-            new_val = new_val + '\n' + cleaned_val
-            print("new value is: ",new_val)
-        else:
-            #new_val = "inputtocode = \'" + val + "\'" +old_val
-            new_val = "inputtocode = \'" + val + "\'"
-            new_val = new_val.rstrip()
-            new_val = new_val + '\n' + old_val
-        # cursor = self.content.text.textCursor()
-        # cursor.movePosition(QTextCursor.Start)
-        # self.content.text.setTextCursor(cursor)
+        new_val = val + '\n' + old_val
         self.value = new_val
-        #self.content.text.setText(new_val)
+        #self.content.text.setText(val)
         self.markInvalid(False)
         self.markDirty(False)
         self.evalChildren()

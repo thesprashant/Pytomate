@@ -33,8 +33,8 @@ class output_content(OurNodeContentWidget):
 class output_graphics(MdiGraphicsNode):
     def initSizes(self):
         super().initSizes()
-        self.width = 200
-        self.height = 150
+        self.width = 300
+        self.height = 200
         self.edge_size = 8
         self._padding = 8
 

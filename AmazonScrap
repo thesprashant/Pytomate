@@ -1,0 +1,669 @@
+{
+    "id": 2989234455504,
+    "scene_width": 70000,
+    "scene_height": 70000,
+    "nodes": [
+        {
+            "id": 2989234467792,
+            "title": "Note",
+            "pos_x": -720.5,
+            "pos_y": -357.25,
+            "inputs": [],
+            "outputs": [
+                {
+                    "id": 2989234467856,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "value0": "Amazon Scrapping ",
+                "value1": "Script By: Aryan Gupta\nGraph By: Prashant Shukla"
+            },
+            "op_code": 5
+        },
+        {
+            "id": 2989234511248,
+            "title": "Note",
+            "pos_x": -501.5625,
+            "pos_y": -358.25,
+            "inputs": [],
+            "outputs": [
+                {
+                    "id": 2989234514064,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "value0": "Requirements:",
+                "value1": "Install Required Python Modules:\n\npi install requests\n\npip install bs4"
+            },
+            "op_code": 5
+        },
+        {
+            "id": 2230857386960,
+            "title": "Normal Code",
+            "pos_x": -367.81250000000006,
+            "pos_y": 341.0,
+            "inputs": [
+                {
+                    "id": 2230896664592,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 3
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 2230896665104,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 3,
+                    "socket_type": 3
+                }
+            ],
+            "content": {
+                "value0": "Importing Python Modules",
+                "value1": "import requests\n\nfrom bs4 import BeautifulSoup"
+            },
+            "op_code": 8
+        },
+        {
+            "id": 2230896664272,
+            "title": "Input",
+            "pos_x": -731.5,
+            "pos_y": 264.75,
+            "inputs": [],
+            "outputs": [
+                {
+                    "id": 2230896664656,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 3,
+                    "socket_type": 3
+                }
+            ],
+            "content": {
+                "value": "https://www.amazon.in/MSI-Modern-Windows-Classic-C12MO-1202IN/dp/B0D22LZFNT"
+            },
+            "op_code": 1
+        },
+        {
+            "id": 2230896805456,
+            "title": "Note",
+            "pos_x": -288.5625,
+            "pos_y": -358.25,
+            "inputs": [],
+            "outputs": [
+                {
+                    "id": 2230896810832,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 3,
+                    "socket_type": 1
+                }
+            ],
+            "content": {
+                "value0": "Usage Instructions:",
+                "value1": "Enter Product Link in Input Field.\n\nTo check wether page is being retrieved check upper switch\n\nTo run script check lower switch"
+            },
+            "op_code": 5
+        },
+        {
+            "id": 2230896814352,
+            "title": "Normal Code",
+            "pos_x": -192.31249999999994,
+            "pos_y": -24.250000000000014,
+            "inputs": [
+                {
+                    "id": 2231030610384,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 3
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 2231030604752,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 3,
+                    "socket_type": 3
+                }
+            ],
+            "content": {
+                "value0": "Setting Headers For Request",
+                "value1": "HEADERS=({\"User-Agent\":\"Edg/129.0.0.0\",\"Accept-Language\":\"en-US,en;q=0.5\"})"
+            },
+            "op_code": 8
+        },
+        {
+            "id": 2231030672720,
+            "title": "Normal Code",
+            "pos_x": 15.437499999999915,
+            "pos_y": 175.00000000000003,
+            "inputs": [
+                {
+                    "id": 2231030675664,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 3
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 2231030676496,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 3,
+                    "socket_type": 3
+                }
+            ],
+            "content": {
+                "value0": "Requesting page using get() function",
+                "value1": "page = requests.get(inputtocode, headers=HEADERS)"
+            },
+            "op_code": 8
+        },
+        {
+            "id": 2231030674320,
+            "title": "Normal Code",
+            "pos_x": 208.43750000000003,
+            "pos_y": -50.000000000000014,
+            "inputs": [
+                {
+                    "id": 2231030668176,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 3
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 2231030672528,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 3,
+                    "socket_type": 3
+                }
+            ],
+            "content": {
+                "value0": "Checking wether page is retrieved",
+                "value1": "if page.status_code != 200:\n        print(\"Failed to retrieve the product page\")\nelse:\n   print(\"Page successfully retrieved.\")"
+            },
+            "op_code": 8
+        },
+        {
+            "id": 2231030809360,
+            "title": "Result",
+            "pos_x": 890.6875,
+            "pos_y": -307.25,
+            "inputs": [
+                {
+                    "id": 2230896734224,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 1
+                },
+                {
+                    "id": 2231030810448,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 2
+                },
+                {
+                    "id": 2231030814864,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 3
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 2231030815632,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 3,
+                    "socket_type": 3
+                }
+            ],
+            "content": {
+                "value": ""
+            },
+            "op_code": 4
+        },
+        {
+            "id": 2231031099216,
+            "title": "Normal Code",
+            "pos_x": 683.1374999999998,
+            "pos_y": -0.5999999999999801,
+            "inputs": [
+                {
+                    "id": 2231031099856,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 3
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 2231031100432,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 3,
+                    "socket_type": 3
+                }
+            ],
+            "content": {
+                "value0": "Parsing scrapped web page",
+                "value1": "soup = BeautifulSoup(page.content, 'html.parser')"
+            },
+            "op_code": 8
+        },
+        {
+            "id": 2231031324240,
+            "title": "Switch",
+            "pos_x": 521.8439000000001,
+            "pos_y": -143.4456,
+            "inputs": [
+                {
+                    "id": 2231031317456,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 1
+                },
+                {
+                    "id": 2231031322448,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 2
+                },
+                {
+                    "id": 2231031320208,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 3
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 2231031325968,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 3,
+                    "socket_type": 3
+                }
+            ],
+            "content": {
+                "value": false
+            },
+            "op_code": 6
+        },
+        {
+            "id": 2231036712464,
+            "title": "Exec",
+            "pos_x": 658.4375,
+            "pos_y": -205.25,
+            "inputs": [
+                {
+                    "id": 2231036720656,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 1
+                },
+                {
+                    "id": 2231036718736,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 2
+                },
+                {
+                    "id": 2231036720592,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 3
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 2231036712848,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 3,
+                    "socket_type": 3
+                }
+            ],
+            "content": {},
+            "op_code": 3
+        },
+        {
+            "id": 2231036787920,
+            "title": "Switch",
+            "pos_x": 528.6374999999998,
+            "pos_y": 178.7,
+            "inputs": [
+                {
+                    "id": 2231036778960,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 1
+                },
+                {
+                    "id": 2231036782608,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 2
+                },
+                {
+                    "id": 2231036784656,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 3
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 2231036788624,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 3,
+                    "socket_type": 3
+                }
+            ],
+            "content": {
+                "value": true
+            },
+            "op_code": 6
+        },
+        {
+            "id": 2231036995472,
+            "title": "Normal Code",
+            "pos_x": 1077.5000000000002,
+            "pos_y": 55.437500000000085,
+            "inputs": [
+                {
+                    "id": 2231036989712,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 3
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 2231036994576,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 3,
+                    "socket_type": 3
+                }
+            ],
+            "content": {
+                "value0": "Extracting title",
+                "value1": "title = soup.find('span', {'id': 'productTitle'}).text.strip() if soup.find('span', {'id': 'productTitle'}) else 'Title not found'\nprint(\" Title : \",title)"
+            },
+            "op_code": 8
+        },
+        {
+            "id": 2231037097680,
+            "title": "Normal Code",
+            "pos_x": 946.4375,
+            "pos_y": 427.75,
+            "inputs": [
+                {
+                    "id": 2231037258064,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 3
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 2231037258832,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 3,
+                    "socket_type": 3
+                }
+            ],
+            "content": {
+                "value0": "Extracting price",
+                "value1": "price=soup.find('span',attrs={'class':'a-offscreen'}).text\nprint(\"Price : \",price)"
+            },
+            "op_code": 8
+        },
+        {
+            "id": 2231038821328,
+            "title": "Normal Code",
+            "pos_x": 360.33749999999975,
+            "pos_y": 412.5500000000003,
+            "inputs": [
+                {
+                    "id": 2231036780560,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 3
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 2231036780432,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 3,
+                    "socket_type": 3
+                }
+            ],
+            "content": {
+                "value0": "Extracting rating",
+                "value1": "rating = soup.find('span', {'class': 'a-icon-alt'}).text.strip() if soup.find('span', {'class': 'a-icon-alt'}) else 'Rating not found'\nprint(\"Rating : \",rating)"
+            },
+            "op_code": 8
+        },
+        {
+            "id": 2231038821584,
+            "title": "Output",
+            "pos_x": -723.75,
+            "pos_y": 542.5,
+            "inputs": [
+                {
+                    "id": 2231037096720,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 3
+                }
+            ],
+            "outputs": [],
+            "content": {
+                "value": "Page successfully retrieved.\n Title :  MSI Modern 14, Intel 12th Gen. i7 1255U,36CM Laptop(16GB/512GB NVMe SSD/Windows 11 Home/Iris Xe/Classic Black/1.4Kg), C12MO-1202IN\nPrice :  \u20b949,990.00\nRating :  4.2 out of 5 stars\n"
+            },
+            "op_code": 2
+        },
+        {
+            "id": 2231038640016,
+            "title": "Exec",
+            "pos_x": -20.31249999999997,
+            "pos_y": 567.5,
+            "inputs": [
+                {
+                    "id": 2231038633360,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 1
+                },
+                {
+                    "id": 2231039334544,
+                    "index": 1,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 2
+                },
+                {
+                    "id": 2231039334160,
+                    "index": 2,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 3
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 2231039289808,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 3,
+                    "socket_type": 3
+                }
+            ],
+            "content": {},
+            "op_code": 3
+        },
+        {
+            "id": 2439830518416,
+            "title": "Code with input",
+            "pos_x": -419.5625,
+            "pos_y": 15.750000000000007,
+            "inputs": [
+                {
+                    "id": 2439830519568,
+                    "index": 0,
+                    "multi_edges": false,
+                    "position": 2,
+                    "socket_type": 3
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 2439830518480,
+                    "index": 0,
+                    "multi_edges": true,
+                    "position": 3,
+                    "socket_type": 3
+                }
+            ],
+            "content": {
+                "value0": "Taking URL as input",
+                "value1": ""
+            },
+            "op_code": 7
+        }
+    ],
+    "edges": [
+        {
+            "id": 2231030609936,
+            "edge_type": 2,
+            "start": 2230896665104,
+            "end": 2231030610384
+        },
+        {
+            "id": 2230896814544,
+            "edge_type": 2,
+            "start": 2231030604752,
+            "end": 2231030675664
+        },
+        {
+            "id": 2231030669136,
+            "edge_type": 2,
+            "start": 2231030676496,
+            "end": 2231030668176
+        },
+        {
+            "id": 2231036421008,
+            "edge_type": 2,
+            "start": 2231031320208,
+            "end": 2231030672528
+        },
+        {
+            "id": 2231036545872,
+            "edge_type": 2,
+            "start": 2231031325968,
+            "end": 2231036720592
+        },
+        {
+            "id": 2231036782160,
+            "edge_type": 2,
+            "start": 2231036712848,
+            "end": 2231030814864
+        },
+        {
+            "id": 2231036898256,
+            "edge_type": 2,
+            "start": 2231030672528,
+            "end": 2231036784656
+        },
+        {
+            "id": 2231036786896,
+            "edge_type": 2,
+            "start": 2231036788624,
+            "end": 2231031099856
+        },
+        {
+            "id": 2231036787600,
+            "edge_type": 2,
+            "start": 2231031100432,
+            "end": 2231036989712
+        },
+        {
+            "id": 2231031475792,
+            "edge_type": 2,
+            "start": 2231036994576,
+            "end": 2231037258064
+        },
+        {
+            "id": 2231031470416,
+            "edge_type": 2,
+            "start": 2231037258832,
+            "end": 2231036780560
+        },
+        {
+            "id": 2231039440976,
+            "edge_type": 2,
+            "start": 2231036780432,
+            "end": 2231039334160
+        },
+        {
+            "id": 2231038974608,
+            "edge_type": 2,
+            "start": 2231039289808,
+            "end": 2231037096720
+        },
+        {
+            "id": 2439830637904,
+            "edge_type": 2,
+            "start": 2230896664656,
+            "end": 2439830519568
+        },
+        {
+            "id": 2439830647248,
+            "edge_type": 2,
+            "start": 2439830518480,
+            "end": 2230896664592
+        }
+    ]
+}

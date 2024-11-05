@@ -37,13 +37,15 @@ class ToolNode_Exec(MdiNode):
         self.content = exec_content(self)
         self.grNode = exec_graphics(self)
 
-    def execute_code(self, code: str) -> str:
+    def run_script(self, script_path):
         # Create a StringIO object to capture the output
         output = io.StringIO()
 
         # Redirect stdout to the StringIO object
         with contextlib.redirect_stdout(output):
-            exec(code)  # Execute the code provided as a string
+            with open(script_path) as f:
+                code = f.read()
+                exec(code)  # Execute the code
 
         # Get the captured output
         return output.getvalue()
@@ -54,7 +56,10 @@ class ToolNode_Exec(MdiNode):
             self.markInvalid()
             return
         val = input_node.eval()
-        self.value = self.execute_code(val)
+        with open("exec_temp.py","w") as text_file:
+            text_file.write(val)
+        result = self.run_script('exec_temp.py')
+        self.value = result
         self.markInvalid(False)
         self.markDirty(False)
         self.evalChildren()

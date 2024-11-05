@@ -1,7 +1,7 @@
+import os
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
-
 from pytomate_window import PytomateWindow
 from pytomate_sub_window import PytomateSubWindow
 from pytomate_utils import dumpException, pp
@@ -46,6 +46,8 @@ class PytomateMdiWindow(PytomateWindow):
         self.readSettings()
 
         self.setWindowTitle("Pytomate")
+
+        self.createMdiWelcome()
 
     def closeEvent(self, event):
         self.mdiArea.closeAllSubWindows()
@@ -114,7 +116,8 @@ class PytomateMdiWindow(PytomateWindow):
         QMessageBox.about(self, "About Pytomate",
                           "<b>Pytomate</b> is a tool designed to simplify automation with Python. "
                           "It features a flow builder that allows you to create custom automation workflows, "
-                          "and it also provides pre-made modules for quick and easy automation solutions. ")
+                          "and it also provides pre-made modules for quick and easy automation solutions. "
+                          "<br> <br> <b> Made By : Prashant Shukla <b> ")
 
     def createMenus(self):
         super().createMenus()
@@ -253,3 +256,21 @@ class PytomateMdiWindow(PytomateWindow):
     def setActiveSubWindow(self, window):
         if window:
             self.mdiArea.setActiveSubWindow(window)
+
+    def createMdiWelcome(self):
+        filename = "AmazonScrap"
+        current_dir = os.getcwd()
+        fname = os.path.join(current_dir, filename)
+        if fname:
+            existing = self.findMdiChild(fname)
+            if existing:
+                self.mdiArea.setActiveSubWindow(existing)
+            else:
+                pytomate = PytomateSubWindow()
+                if pytomate.fileLoad(fname):
+                    self.statusBar().showMessage("File %s loaded" % fname, 5000)
+                    pytomate.setTitle()
+                    subwnd = self.mdiArea.addSubWindow(pytomate)
+                    subwnd.show()
+                else:
+                    pytomate.close()
